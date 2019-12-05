@@ -11,7 +11,7 @@ window.WebFontConfig = {
 (function() {
     const wf = document.createElement('script');
     const s = document.getElementsByTagName('script')[0];
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+    wf.src = ('https:' === document.location.protocol ? 'https' : 'http') +
         '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
     wf.type = 'text/javascript';
     wf.async = 'true';
