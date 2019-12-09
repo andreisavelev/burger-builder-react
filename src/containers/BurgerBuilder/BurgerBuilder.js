@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 
 import Aux from '../../hoc/Auxiliary';
-import Burger from '../../components/burger/Burger'
+import Burger from '../../components/burger/Burger';
+import BuildControls from '../../components/burger/BuildControls/BuildControls.js'
 
 /**
  * @classdesc Main burger builder component that includes Burger and Build Controls
@@ -22,7 +23,7 @@ class BurgerBuilder extends Component {
         return (
             <Aux>
                 <Burger ingredients={this.state.ingredients} />
-                <div>Build Controls</div>
+                <BuildControls />
             </Aux>
         );
     }
