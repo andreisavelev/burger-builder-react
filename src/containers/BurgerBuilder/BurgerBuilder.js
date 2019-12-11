@@ -24,9 +24,24 @@ class BurgerBuilder extends Component {
             cheese: 0,
             meat: 0
         },
-        totalPrice: 4
+        totalPrice: 4,
+        purchasable: false
     }
 
+    /**
+     * Caclucate sum of added ingredients and 
+     * convert the result in to a boolean
+     * @type {Function}
+     * @param ingredients {Object} - key-value list of ingredients
+     */
+    updatePurchaseSate(ingredients) {
+        let sum = Object.values(ingredients)
+            .reduce((sum, item) => sum + item, 0);
+
+        this.setState({
+            purchasable: sum > 0
+        });
+    }
     /**
      * Adding an new ingredient and calculating new priceAddition
      * @type {function}
@@ -48,6 +63,7 @@ class BurgerBuilder extends Component {
             ingredients: updatedIngredients,
             totalPrice: newPrice
         });
+        this.updatePurchaseSate(updatedIngredients);
     }
 
     removeIngredientHandler = type => {
@@ -66,7 +82,8 @@ class BurgerBuilder extends Component {
             this.setState({
                 ingredients: updatedIngredients,
                 totalPrice: newPrice
-            });   
+            });
+            this.updatePurchaseSate(updatedIngredients);
         }
     }
 
@@ -86,6 +103,8 @@ class BurgerBuilder extends Component {
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls ingredientAdded={this.addIngredientHandler} 
                                ingredientRemoved={this.removeIngredientHandler} 
+                               price={this.state.totalPrice}
+                               purchasable={this.state.purchasable}
                                disabled={disabledControls} />
             </Aux>
         );
