@@ -4,6 +4,7 @@ import Aux from '../../hoc/Auxiliary';
 import Burger from '../../components/burger/Burger';
 import BuildControls from '../../components/burger/BuildControls/BuildControls.js';
 import Modal from '../../components/ui/Modal/Modal';
+import Backdrop from '../../components/ui/Backdrop/Backdrop';
 import OrderSummary from '../../components/burger/OrderSummary/OrderSummary';
 
 const INGREDIENTS_PRICES = {
@@ -55,6 +56,13 @@ class BurgerBuilder extends Component {
             purchasable: sum > 0
         });
     }
+
+    closeModalHandler() {
+        this.setState({
+            purchasing: false
+        });
+    }
+
     /**
      * Adding an new ingredient and calculating new priceAddition
      * @type {function}
@@ -113,6 +121,8 @@ class BurgerBuilder extends Component {
 
         return (
             <Aux>
+                <Backdrop show={this.state.purchasing} 
+                          closeModal={() => {this.closeModalHandler()}} />
                 <Modal show={this.state.purchasing}>
                     <OrderSummary ingredients={this.state.ingredients} />
                 </Modal>
