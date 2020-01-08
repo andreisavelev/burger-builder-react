@@ -3,13 +3,16 @@ import React, {Component} from 'react';
 import Modal from '../../components/ui/Modal/Modal';
 import Aux from '../Auxiliary';
 
+/**
+ * Render modal if error occurs
+ * @param WrappedComponent
+ * @param axios
+ * @returns {{new<P, S>(props: Readonly<P>): {errorConfirmedHandler: function(): void, state: {error: null}, componentDidMount: {(): void, (): void}, render: {(): *, (): React.ReactNode}, shouldComponentUpdate?(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any): boolean, componentWillUnmount?(): void, componentDidCatch?(error: Error, errorInfo: React.ErrorInfo): void, getSnapshotBeforeUpdate?(prevProps: Readonly<{}>, prevState: Readonly<{}>): (any | null), componentDidUpdate?(prevProps: Readonly<{}>, prevState: Readonly<{}>, snapshot?: any): void, componentWillMount?(): void, UNSAFE_componentWillMount?(): void, componentWillReceiveProps?(nextProps: Readonly<{}>, nextContext: any): void, UNSAFE_componentWillReceiveProps?(nextProps: Readonly<{}>, nextContext: any): void, componentWillUpdate?(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any): void, UNSAFE_componentWillUpdate?(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any): void, setState<K extends keyof S>(state: (((prevState: Readonly<S>, props: Readonly<P>) => (Pick<S, K> | S | null)) | Pick<S, K> | S | null), callback?: () => void): void, forceUpdate(callBack?: () => void): void, readonly props: Readonly<{children?: React.ReactNode}> & Readonly<P>, context: any, refs: {[p: string]: React.ReactInstance}}, new<P, S>(props: P, context?: any): {errorConfirmedHandler: function(): void, state: {error: null}, componentDidMount: {(): void, (): void}, render: {(): *, (): React.ReactNode}, shouldComponentUpdate?(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any): boolean, componentWillUnmount?(): void, componentDidCatch?(error: Error, errorInfo: React.ErrorInfo): void, getSnapshotBeforeUpdate?(prevProps: Readonly<{}>, prevState: Readonly<{}>): (any | null), componentDidUpdate?(prevProps: Readonly<{}>, prevState: Readonly<{}>, snapshot?: any): void, componentWillMount?(): void, UNSAFE_componentWillMount?(): void, componentWillReceiveProps?(nextProps: Readonly<{}>, nextContext: any): void, UNSAFE_componentWillReceiveProps?(nextProps: Readonly<{}>, nextContext: any): void, componentWillUpdate?(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any): void, UNSAFE_componentWillUpdate?(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any): void, setState<K extends keyof S>(state: (((prevState: Readonly<S>, props: Readonly<P>) => (Pick<S, K> | S | null)) | Pick<S, K> | S | null), callback?: () => void): void, forceUpdate(callBack?: () => void): void, readonly props: Readonly<{children?: React.ReactNode}> & Readonly<P>, context: any, refs: {[p: string]: React.ReactInstance}}, prototype: {errorConfirmedHandler: function(): void, state: {error: null}, componentDidMount: {(): void, (): void}, render: {(): *, (): React.ReactNode}, shouldComponentUpdate?(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any): boolean, componentWillUnmount?(): void, componentDidCatch?(error: Error, errorInfo: React.ErrorInfo): void, getSnapshotBeforeUpdate?(prevProps: Readonly<{}>, prevState: Readonly<{}>): (any | null), componentDidUpdate?(prevProps: Readonly<{}>, prevState: Readonly<{}>, snapshot?: any): void, componentWillMount?(): void, UNSAFE_componentWillMount?(): void, componentWillReceiveProps?(nextProps: Readonly<{}>, nextContext: any): void, UNSAFE_componentWillReceiveProps?(nextProps: Readonly<{}>, nextContext: any): void, componentWillUpdate?(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any): void, UNSAFE_componentWillUpdate?(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any): void, setState<K extends keyof S>(state: (((prevState: Readonly<S>, props: Readonly<P>) => (Pick<S, K> | S | null)) | Pick<S, K> | S | null), callback?: () => void): void, forceUpdate(callBack?: () => void): void, readonly props: Readonly<{children?: React.ReactNode}> & Readonly<P>, context: any, refs: {[p: string]: React.ReactInstance}}}}
+ */
 const withErrorHandler = (WrappedComponent, axios) => {
     return class extends Component {
-        state = {
-            error: null
-        };
-
-        componentDidMount() {
+        constructor(props) {
+            super(props);
             axios.interceptors
                 .request
                 .use(req => {
@@ -24,6 +27,9 @@ const withErrorHandler = (WrappedComponent, axios) => {
                     error => {
                         this.setState({error})
                     });
+        }
+        state = {
+            error: null
         };
 
         errorConfirmedHandler = () => {
