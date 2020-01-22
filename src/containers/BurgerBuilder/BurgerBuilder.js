@@ -97,34 +97,51 @@ class BurgerBuilder extends Component {
     };
 
     purchaseContinueHandler = () => {
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Andrey Savelev',
-                address: {
-                    street: 'Teststreet 1',
-                    zipCode: '12412',
-                    country: 'Russia'
-                },
-                email: 'test@test.com',
-                deliveryMethod: 'fastest'
-            }
-        };
+        let queryParams = [];
+        let queryString = '';
 
-        this.setState({
-            loading: true
+        for (let i in this.state.ingredients) {
+            if (this.state.ingredients.hasOwnProperty(i)) {
+                queryParams.push(`${encodeURIComponent(i)}=${encodeURIComponent(this.state.ingredients[i])}`);
+            }
+        }
+
+        queryString = queryParams.join('&');
+
+        this.props.history.push({
+            pathname: '/checkout',
+            search: `?${queryString}`
         });
 
-        axios.post('/orders.json', order)
-            .then(response => this.setState({
-                loading: false,
-                purchasing: false
-            }))
-            .catch(error => this.setState({
-                loading: false,
-                purchasing: false
-            }));
+
+        // const order = {
+        //     ingredients: this.state.ingredients,
+        //     price: this.state.totalPrice,
+        //     customer: {
+        //         name: 'Andrey Savelev',
+        //         address: {
+        //             street: 'Teststreet 1',
+        //             zipCode: '12412',
+        //             country: 'Russia'
+        //         },
+        //         email: 'test@test.com',
+        //         deliveryMethod: 'fastest'
+        //     }
+        // };
+        //
+        // this.setState({
+        //     loading: true
+        // });
+        //
+        // axios.post('/orders.json', order)
+        //     .then(response => this.setState({
+        //         loading: false,
+        //         purchasing: false
+        //     }))
+        //     .catch(error => this.setState({
+        //         loading: false,
+        //         purchasing: false
+        //     }));
     };
 
     render() {
