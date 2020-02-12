@@ -6,6 +6,10 @@ import classes from './ContactData.css';
 import Spinner from '../../../components/ui/Spinner/Spinner';
 import Input from '../../../components/ui/Input/Input';
 
+/**
+ * @class
+ * @classdesc Form to store orders
+ */
 class ContactData extends Component {
     state = {
         orderForm: {
@@ -16,6 +20,11 @@ class ContactData extends Component {
                     type: 'text'
                 },
                 value: '',
+                touched: false,
+                validation: {
+                    required: true,
+                    valid: false
+                }
             },
 
             street: {
@@ -24,7 +33,12 @@ class ContactData extends Component {
                     placeholder: 'Please, enter your address',
                     type: 'text'
                 },
-                value: ''
+                value: '',
+                touched: false,
+                validation: {
+                    required: true,
+                    valid: false
+                }
             },
 
             zipCode: {
@@ -33,7 +47,12 @@ class ContactData extends Component {
                     placeholder: 'Please, enter your zip code',
                     type: 'number'
                 },
-                value: ''
+                value: '',
+                touched: false,
+                validation: {
+                    required: true,
+                    valid: false
+                }
             },
             country: {
                 elementType: 'input',
@@ -41,7 +60,12 @@ class ContactData extends Component {
                     placeholder: 'Please, enter your country',
                     type: 'string'
                 },
-                value: ''
+                value: '',
+                touched: false,
+                validation: {
+                    required: true,
+                    valid: false
+                }
             },
             email: {
                 elementType: 'input',
@@ -49,7 +73,12 @@ class ContactData extends Component {
                     placeholder: 'Please, enter your email',
                     type: 'email'
                 },
-                value: ''
+                value: '',
+                touched: false,
+                validation: {
+                    required: true,
+                    valid: false
+                }
             },
             deliveryMethod: {
                 elementType: 'select',
@@ -72,6 +101,28 @@ class ContactData extends Component {
         loading: false
     };
 
+    /**
+     * Run validation checks
+     * @param value
+     * @param rule
+     * @returns {boolean}
+     */
+    checkValidity(value, rule) {
+        let isValid = false;
+
+        if (rule && rule.required) {
+            isValid = value.trim() !== '';
+        } else {
+            isValid = true;
+        }
+
+        return isValid;
+    }
+
+    /**
+     * Handle the submit event
+     * @param event
+     */
     orderHandler = event => {
         const orderData = {};
         const {orderForm} = this.state;
@@ -107,21 +158,38 @@ class ContactData extends Component {
             }));
     };
 
+    /**
+     * Handle the input changes
+     * @param event
+     * @param inputId
+     */
     onInputChangedHandler = (event, inputId) => {
         const orderForm = {
             ...this.state.orderForm
         };
-        const updatedFormElement = {
+
+        orderForm[inputId] = {
             ...orderForm[inputId],
+            validation: {
+                ...orderForm[inputId].validation,
+                touched: true,
+                valid: this.checkValidity(
+                    event.target.value,
+                    orderForm[inputId].validation
+                )
+            },
             value: event.target.value
         };
 
-        orderForm[inputId] = updatedFormElement;
         this.setState({
-            orderForm: orderForm
-        })
+            orderForm
+        });
     };
 
+    /**
+     * @override Component.render
+     * @returns {*}
+     */
     render() {
         const orderFormArray = [];
 
@@ -141,6 +209,8 @@ class ContactData extends Component {
                            changed={event => this.onInputChangedHandler(event, item.id)}
                            elementType={item.config.elementType}
                            elementConfig={item.config.elementConfig}
+                           valid={item.config.validation ? item.config.validation.valid : true}
+                           touched={item.config.touched}
                            value={item.config.value}/>
                 ))}
                 <Button btnType={'Success'}>
