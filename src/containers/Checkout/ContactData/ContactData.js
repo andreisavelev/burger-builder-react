@@ -73,18 +73,19 @@ class ContactData extends Component {
     };
 
     orderHandler = event => {
+        const orderData = {};
+        const {orderForm} = this.state;
+        for (let formElementId in orderForm) {
+            if (orderForm.hasOwnProperty(formElementId)) {
+                orderData[formElementId] = orderForm[formElementId].value;
+            }
+        }
+
+
         const order = {
             ingredients: this.props.ingredients,
             totalPrice: this.props.price,
-            customer: {
-                name: 'Andrey Savelev',
-                address: {
-                    street: 'Teststreet 1',
-                    zipCode: '12412'
-                },
-                email: 'test@test.com',
-                deliveryMethod: 'fastest'
-            }
+            customer: orderData
         };
 
         event.preventDefault();
@@ -134,7 +135,7 @@ class ContactData extends Component {
         }
 
         let form = (
-            <form>
+            <form onSubmit={this.orderHandler}>
                 {orderFormArray.map(item => (
                     <Input key={item.id}
                            changed={event => this.onInputChangedHandler(event, item.id)}
@@ -142,8 +143,7 @@ class ContactData extends Component {
                            elementConfig={item.config.elementConfig}
                            value={item.config.value}/>
                 ))}
-                <Button btnType={'Success'}
-                        clicked={this.orderHandler}>
+                <Button btnType={'Success'}>
                     ORDER
                 </Button>
             </form>
