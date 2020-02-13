@@ -1,8 +1,4 @@
 .Burger {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
     width: 550px;
     height: 300px;
     margin: auto;
