@@ -98,6 +98,7 @@ class ContactData extends Component {
             }
         },
 
+        formIsValid: false,
         loading: false
     };
 
@@ -167,6 +168,8 @@ class ContactData extends Component {
         const orderForm = {
             ...this.state.orderForm
         };
+        let validFormElements = [];
+        let formIsValid = false;
 
         orderForm[inputId] = {
             ...orderForm[inputId],
@@ -181,8 +184,17 @@ class ContactData extends Component {
             value: event.target.value
         };
 
+        validFormElements = Object.values(orderForm)
+            .map(item => item.validation ? item.validation.valid : true)
+            .filter(item => !item);
+
+        formIsValid = !!validFormElements.length;
+
+        console.log(validFormElements);
+
         this.setState({
-            orderForm
+            orderForm,
+            formIsValid
         });
     };
 
@@ -213,7 +225,7 @@ class ContactData extends Component {
                            touched={item.config.touched}
                            value={item.config.value}/>
                 ))}
-                <Button btnType={'Success'}>
+                <Button btnType={'Success'} disabled={this.state.formIsValid}>
                     ORDER
                 </Button>
             </form>

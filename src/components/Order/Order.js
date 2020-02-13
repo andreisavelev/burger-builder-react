@@ -3,7 +3,7 @@ import React from 'react';
 import classes from './order.css';
 
 const order = function (props) {
-    let ingredients = Object.entries(props.ingredients);
+    let ingredients = Object.entries(props.ingredients ? props.ingredients : {});
     let ingredientsLength = ingredients.length;
 
     return (
