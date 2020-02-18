@@ -39,9 +39,16 @@ function getUpdatedState(state, action, newIngredientValue, newTotalPrice) {
  * @returns {{ingredients: (null|{}|Array), error: boolean}}
  */
 function getFetchedStated(state, action) {
+    let ingredients = {...action.ingredients};
+
     return {
         ...state,
-        ingredients: action.ingredients,
+        ingredients: {
+            salad: ingredients.salad,
+            bacon: ingredients.bacon,
+            cheese: ingredients.cheese,
+            meat: ingredients.cheese
+        },
         error: false
     }
 }

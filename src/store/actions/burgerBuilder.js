@@ -27,7 +27,7 @@ export const removeIngredient = function (ingredientName) {
 
 /**
  * Action creator to set ingredients synchronously
- * @param ingredients {array}
+ * @param ingredients {object}
  * @returns {{action: string, ingredients: array}}
  */
 export const setIngredients = function(ingredients) {
