@@ -37,12 +37,20 @@ export const setIngredients = function(ingredients) {
     }
 };
 
+/**
+ * Action creator to handle fallen ingredients fetching
+ * @returns {{type: string}}
+ */
 export const fetchIngredientsFailed = function () {
     return {
         type: actionTypes.FETCH_INGREDIENTS_FAILED
     }
 };
 
+/**
+ * Async action creator to fetch ingredients and set correct state in depending on that result
+ * @returns {function(...[*]=)}
+ */
 export const initIngredients = function () {
     return function(dispatch) {
         axios.get('/ingredients.json')
