@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {Route} from 'react-router-dom';
+import {Route, Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
+import Aux from "../../hoc/Auxiliary";
 
 class Checkout extends Component {
     checkoutCancelledHandler = () => {
@@ -15,19 +16,25 @@ class Checkout extends Component {
     };
 
     render() {
-        return (
-            <div>
-                <CheckoutSummary ingredients={this.props.ingredients}
-                                 checkoutCancelled={this.checkoutCancelledHandler}
-                                 checkoutContinued={this.checkoutContinuedHandler}/>
-                <Route path={`${this.props.match.path}/contact-data`}
-                       component={ContactData}/>
-            </div>
-        );
+        let summary = <Redirect to={'/'}/>;
+
+        if (this.props.ingredients) {
+            summary = (
+                <Aux>
+                    <CheckoutSummary ingredients={this.props.ingredients}
+                                     checkoutCancelled={this.checkoutCancelledHandler}
+                                     checkoutContinued={this.checkoutContinuedHandler}/>
+                    <Route path={`${this.props.match.path}/contact-data`}
+                           component={ContactData}/>
+                </Aux>
+            );
+        }
+
+        return summary;
     }
 }
 
-const mapStateToProps = function(state) {
+const mapStateToProps = function (state) {
     return {
         ingredients: state.ingredients
     };
