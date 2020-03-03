@@ -1,6 +1,18 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-orders';
 
+// SYNC ACTION CREATORS
+
+/**
+ * Sync action creator for initialization of burger purchasing
+ * @returns {{type: string}}
+ */
+export const purchaseInit = function () {
+    return {
+        type: actionTypes.PURCHASE_INIT
+    }
+};
+
 /**
  * Sync action creator for successful purchasing
  * @param id {string|number}
@@ -37,6 +49,8 @@ export const purchaseBurgerStart = function () {
         type: actionTypes.PURCHASE_BURGER_START
     }
 };
+
+// ASYNC ACTION CREATORS
 
 /**
  * Async action creator to stating purchasing the burger

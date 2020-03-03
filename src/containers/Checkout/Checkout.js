@@ -5,8 +5,15 @@ import {connect} from 'react-redux';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
 import Aux from "../../hoc/Auxiliary";
+import {purchaseInit} from "../../store/actions";
 
 class Checkout extends Component {
+
+    componentWilMount() {
+        console.log('will mount');
+        this.props.onInitPurchase();
+    };
+
     checkoutCancelledHandler = () => {
         this.props.history.goBack();
     };
@@ -16,11 +23,14 @@ class Checkout extends Component {
     };
 
     render() {
+        let purchasedRedirect = null;
         let summary = <Redirect to={'/'}/>;
 
         if (this.props.ingredients) {
+            purchasedRedirect = this.props.purchased ? <Redirect to={'/'}/>: null;
             summary = (
                 <Aux>
+                    {purchasedRedirect}
                     <CheckoutSummary ingredients={this.props.ingredients}
                                      checkoutCancelled={this.checkoutCancelledHandler}
                                      checkoutContinued={this.checkoutContinuedHandler}/>
@@ -31,13 +41,20 @@ class Checkout extends Component {
         }
 
         return summary;
-    }
+    };
 }
 
 const mapStateToProps = function (state) {
     return {
-        ingredients: state.burgerBuilder.ingredients
+        ingredients: state.burgerBuilder.ingredients,
+        purchased: state.order.purchased
     };
 };
 
-export default connect(mapStateToProps)(Checkout);
+const mapDispatchToProps = function (dispatch) {
+    return {
+        onInitPurchase: () => dispatch(purchaseInit())
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);

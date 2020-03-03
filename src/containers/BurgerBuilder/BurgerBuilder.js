@@ -46,6 +46,7 @@ class BurgerBuilder extends Component {
     };
 
     purchaseContinueHandler = () => {
+        this.props.onInitPurchase();
         this.props.history.push('/checkout');
     };
 
@@ -56,10 +57,7 @@ class BurgerBuilder extends Component {
         let orderSummary = null;
         let burger = this.props.error ? <p>Ingredients can`t be loaded!</p> : <Spinner/>;
 
-        console.log('render burger builder');
-
         if (this.props.ingredients) {
-            console.log('ings loaded');
             burger = (
                 <Aux>
                     <Burger ingredients={this.props.ingredients}/>
@@ -116,6 +114,9 @@ const mapDispatchToProps = function(dispatch) {
         },
         onInitIngredients: function () {
             dispatch(burgerBuilderActions.initIngredients())
+        },
+        onInitPurchase: function () {
+            dispatch(burgerBuilderActions.purchaseInit());
         }
     }
 };
