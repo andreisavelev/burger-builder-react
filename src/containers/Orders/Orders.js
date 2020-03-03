@@ -1,45 +1,22 @@
 import React, {Component} from 'react';
+import {connect}  from 'react-redux';
 
 import Spinner from '../../components/ui/Spinner/Spinner'
 import Order from '../../components/Order/Order';
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import axios from '../../axios-orders';
+import {fetchOrders} from "../../store/actions";
 
 class Orders extends Component {
-    state = {
-        orders: [],
-        loading: true
-    };
-
     componentDidMount() {
-        axios.get('/orders.json')
-            .then(respons => {
-                let orders = [];
-
-                for (let item in respons.data) {
-                    if (respons.data.hasOwnProperty(item)) {
-                        orders.push({
-                            id: item,
-                            ...respons.data[item]
-                        });
-                    }
-                }
-
-                this.setState({
-                    orders,
-                    loading: false
-                });
-            })
-            .catch(error => this.setState({
-                loading: false
-            }));
+        this.props.onInitOrders();
     }
 
     render() {
         let ordersList = <Spinner/>;
 
-        if (!this.state.loading) {
-            ordersList = this.state.orders.map(item => (
+        if (!this.props.loading) {
+            ordersList = this.props.orders.map(item => (
                 <Order key={item.id}
                        ingredients={item.ingredients}
                        price={item.totalPrice}/>
@@ -54,4 +31,20 @@ class Orders extends Component {
     }
 }
 
-export default withErrorHandler(Orders, axios);
+const mapStateToProps = function (state) {
+    return {
+        orders: state.order.orders,
+        loading: state.order.loading,
+        error: state.order.error
+    }
+};
+
+const mapDispatchToProps = function (dispatch) {
+    return {
+        onInitOrders: function () {
+            dispatch(fetchOrders());
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, axios));
