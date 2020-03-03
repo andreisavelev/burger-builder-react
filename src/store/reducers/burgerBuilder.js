@@ -49,6 +49,7 @@ function getFetchedStated(state, action) {
             cheese: ingredients.cheese,
             meat: ingredients.cheese
         },
+        totalPrice: 4,
         error: false
     }
 }
