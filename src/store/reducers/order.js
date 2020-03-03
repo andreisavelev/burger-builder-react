@@ -14,6 +14,7 @@ const reducer = (state = initialState, action) => {
             };
         case actionTypes.PURCHASE_BURGER_SUCCESS:
             const newOrder = {
+                ...state,
                 ...action.orderData,
                 id: action.orderId
             };

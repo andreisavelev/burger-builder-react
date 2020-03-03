@@ -56,7 +56,10 @@ class BurgerBuilder extends Component {
         let orderSummary = null;
         let burger = this.props.error ? <p>Ingredients can`t be loaded!</p> : <Spinner/>;
 
+        console.log('render burger builder');
+
         if (this.props.ingredients) {
+            console.log('ings loaded');
             burger = (
                 <Aux>
                     <Burger ingredients={this.props.ingredients}/>
@@ -97,9 +100,9 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = function(state) {
     return {
-        ingredients: state.ingredients,
-        totalPrice: state.totalPrice,
-        error: state.error
+        ingredients: state.burgerBuilder.ingredients,
+        totalPrice: state.burgerBuilder.totalPrice,
+        error: state.burgerBuilder.error
     }
 };
 

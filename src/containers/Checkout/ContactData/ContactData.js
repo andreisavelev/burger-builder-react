@@ -97,7 +97,7 @@ class ContactData extends Component {
                         }
                     ]
                 },
-                value: ''
+                value: 'fastest'
             }
         },
 
@@ -230,9 +230,9 @@ class ContactData extends Component {
 
 const mapStateToProps = function (state) {
     return {
-        ingredients: state.ingredients,
-        price: state.totalPrice,
-        loading: state.loading
+        ingredients: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        loading: state.order.loading
     };
 };
 
