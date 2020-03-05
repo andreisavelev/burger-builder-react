@@ -1,4 +1,4 @@
-import {AUTH_START, AUTH_FAILED, AUTH_SUCCESS} from "../actions/actionTypes";
+import {AUTH_START, AUTH_FAILED, AUTH_SUCCESS, LOG_OUT} from "../actions/actionTypes";
 import updateObject from "../utility/updateObject";
 
 const initialState = {
@@ -28,6 +28,12 @@ const reducer = (state = initialState, action) => {
             return updateObject(state, {
                 error: action.error,
                 loading: false
+            });
+
+        case LOG_OUT:
+            return updateObject(state, {
+                token: null,
+                userId: null
             });
 
         default:

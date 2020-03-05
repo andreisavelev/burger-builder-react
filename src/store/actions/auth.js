@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import {AUTH_START, AUTH_FAILED, AUTH_SUCCESS} from "./actionTypes";
+import {AUTH_START, AUTH_FAILED, AUTH_SUCCESS, LOG_OUT} from "./actionTypes";
 
 export const authStart = function() {
     return {
@@ -19,6 +19,20 @@ export const authFailed = error => {
     return {
         type: AUTH_FAILED,
         error
+    }
+};
+
+export const logOut = () => {
+    return {
+        type: LOG_OUT
+    }
+};
+
+export const checkAuthTimeout = expirationTime => {
+    return dispatch => {
+        setTimeout(() => {
+            dispatch(logOut())
+        }, expirationTime * 1000); // Turn milliseconds to seconds
     }
 };
 
