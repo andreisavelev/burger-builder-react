@@ -5,6 +5,8 @@ import Input from '../../components/ui/Input/Input';
 import Button from "../../components/ui/Button/Button";
 import classes from './Auth.css';
 import {auth} from '../../store/actions/index';
+import Aux from "../../hoc/Auxiliary";
+import Spinner from '../../components/ui/Spinner/Spinner';
 
 class Auth extends Component {
     state = {
@@ -115,34 +117,64 @@ class Auth extends Component {
         }
 
         let form = (
-            <form onSubmit={this.onAuth}>
-                {orderFormArray.map(item => (
-                    <Input key={item.id}
-                           changed={event => this.onInputChangedHandler(event, item.id)}
-                           elementType={item.config.elementType}
-                           elementConfig={item.config.elementConfig}
-                           valid={item.config.validation ? item.config.validation.valid : true}
-                           touched={item.config.touched}
-                           value={item.config.value}/>
-                ))}
-                <Button btnType={'Success'}>
-                    SUBMIT
-                </Button>
-            </form>
-        );
-
-        return (
-            <div className={classes.Auth}>
-                {form}
+            <Aux>
+                <form onSubmit={this.onAuth}>
+                    {orderFormArray.map(item => (
+                        <Input key={item.id}
+                               changed={event => this.onInputChangedHandler(event, item.id)}
+                               elementType={item.config.elementType}
+                               elementConfig={item.config.elementConfig}
+                               valid={item.config.validation ? item.config.validation.valid : true}
+                               touched={item.config.touched}
+                               value={item.config.value}/>
+                    ))}
+                    <Button btnType={'Success'}>
+                        SUBMIT
+                    </Button>
+                </form>
 
                 <Button btnType={'Danger'}
                         clicked={this.onSwitchModeHandler}>
                     SWITCH TO {this.state.isSignUp ? 'SIGN-IN' : 'SIGN-UP'}
                 </Button>
+            </Aux>
+        );
+
+        let errorMessage = null;
+
+        if (this.props.error) {
+            errorMessage = <p style={{
+                padding: '15px 10px',
+                display: 'inline-block',
+                border: '1px solid red',
+                color: 'red',
+                textAlign: 'center',
+            }}>
+                {this.props.error.message}
+            </p>;
+        }
+
+        if (this.props.loading) {
+            form = <Spinner/>
+        }
+
+        return (
+            <div className={classes.Auth}>
+                {errorMessage}
+                {form}
             </div>
         );
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        token: state.auth.token,
+        userId: state.auth.userId,
+        loading: state.auth.loading,
+        error: state.auth.error
+    }
+};
 
 const maoDispatchToProps = dispatch => {
     return {
@@ -150,4 +182,4 @@ const maoDispatchToProps = dispatch => {
     };
 };
 
-export default connect(null, maoDispatchToProps)(Auth);
+export default connect(mapStateToProps, maoDispatchToProps)(Auth);

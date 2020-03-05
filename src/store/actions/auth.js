@@ -11,7 +11,7 @@ export const authStart = function() {
 export const authSuccess = authData => {
     return {
         type: AUTH_SUCCESS,
-        authData
+        ...authData
     }
 };
 
@@ -41,12 +41,15 @@ export const auth = (email, password, isSignUp) => {
             returnSecureToken: true
         })
             .then(response => {
-                console.log(response);
-                dispatch(authSuccess(response.data));
+                const  {idToken, localId} = response.data;
+
+                dispatch(authSuccess({
+                    idToken,
+                    localId
+                }));
             })
             .catch(error => {
-                console.log(error);
-                dispatch(authFailed(error))
+                dispatch(authFailed(error.response.data.error));
             })
     }
 };
