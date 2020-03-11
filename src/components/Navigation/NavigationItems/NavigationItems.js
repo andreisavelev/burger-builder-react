@@ -8,7 +8,7 @@ const navigationItems = ({isAuth}) => {
         <NavigationItem link="/auth">
             Auth
         </NavigationItem> :
-        <NavigationItem link="/log-out">
+        <NavigationItem link="/logout">
             Log out
         </NavigationItem>;
 
