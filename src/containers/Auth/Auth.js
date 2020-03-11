@@ -5,7 +5,7 @@ import {Redirect} from 'react-router-dom';
 import Input from '../../components/ui/Input/Input';
 import Button from "../../components/ui/Button/Button";
 import classes from './Auth.css';
-import {auth} from '../../store/actions/index';
+import {auth, setAuthRedirectPath} from '../../store/actions/index';
 import Aux from "../../hoc/Auxiliary";
 import Spinner from '../../components/ui/Spinner/Spinner';
 
@@ -105,6 +105,15 @@ class Auth extends Component {
         });
     };
 
+    componentDidMount() {
+        if (
+            !this.props.buildingBurger &&
+            this.props.authRedirectPath !== '/'
+        ) {
+            this.props.onSetAuthRedirectPath();
+        }
+    }
+
     render() {
         const orderFormArray = [];
 
@@ -165,7 +174,7 @@ class Auth extends Component {
                     {errorMessage}
                     {form}
                 </div>:
-                <Redirect to={'/'} />
+                <Redirect to={this.props.authRedirectPath} />
         );
     }
 }
@@ -176,13 +185,16 @@ const mapStateToProps = state => {
         userId: state.auth.userId,
         loading: state.auth.loading,
         error: state.auth.error,
-        isAuth: state.auth.token !== null
+        isAuth: state.auth.token !== null,
+        buildingBurger: state.burgerBuilder.building,
+        authRedirectPath: state.auth.authRedirectPath
     }
 };
 
 const maoDispatchToProps = dispatch => {
     return {
-        onAuth: (email, password, isSignUp) => dispatch(auth(email, password, isSignUp))
+        onAuth: (email, password, isSignUp) => dispatch(auth(email, password, isSignUp)),
+        onSetAuthRedirectPath: () => dispatch(setAuthRedirectPath('/'))
     };
 };
 

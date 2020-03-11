@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import {AUTH_START, AUTH_FAILED, AUTH_SUCCESS, LOG_OUT} from "./actionTypes";
+import {AUTH_START, AUTH_FAILED, AUTH_SUCCESS, LOG_OUT, SET_AUTH_REDIRECT_PATH} from "./actionTypes";
 
 export const authStart = function() {
     return {
@@ -25,6 +25,13 @@ export const authFailed = error => {
 export const logOut = () => {
     return {
         type: LOG_OUT
+    }
+};
+
+export const setAuthRedirectPath = path => {
+    return {
+        type: SET_AUTH_REDIRECT_PATH,
+        path
     }
 };
 

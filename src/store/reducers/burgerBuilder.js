@@ -3,7 +3,8 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
     ingredients: null,
     totalPrice: 4,
-    error: false
+    error: false,
+    building: false
 };
 
 const INGREDIENT_PRICES = {
@@ -19,16 +20,18 @@ const INGREDIENT_PRICES = {
  * @param action {object}
  * @param newIngredientValue {number}
  * @param newTotalPrice {number}
+ * @param newBuildingValue {boolean}
  * @returns {{totalPrice: number, ingredients: object}}
  */
-function getUpdatedState(state, action, newIngredientValue, newTotalPrice) {
+function getUpdatedState(state, action, newIngredientValue, newTotalPrice, newBuildingValue) {
     return {
         ...state,
         ingredients: {
             ...state.ingredients,
             [action.ingredientName]: newIngredientValue
         },
-        totalPrice: newTotalPrice
+        totalPrice: newTotalPrice,
+        building: newBuildingValue
     };
 }
 
@@ -50,7 +53,8 @@ function getFetchedStated(state, action) {
             meat: ingredients.cheese
         },
         totalPrice: 4,
-        error: false
+        error: false,
+        building: false
     }
 }
 
@@ -62,6 +66,7 @@ function getFetchedStated(state, action) {
 function getFailedFetchIngredientsState(state) {
     return {
         ...state,
+        building: false,
         error: true
     }
 }
@@ -81,7 +86,8 @@ const reducer = function (state = initialState, action) {
                 state,
                 action,
                 state.ingredients[action.ingredientName] + 1,
-                state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
+                state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+                true
             );
 
         case (actionTypes.REMOVE_INGREDIENT):
@@ -89,7 +95,8 @@ const reducer = function (state = initialState, action) {
                 state,
                 action,
                 state.ingredients[action.ingredientName] > 0 ? state.ingredients[action.ingredientName] - 1 : 0,
-                state.totalPrice - INGREDIENT_PRICES[action.ingredientName]
+                state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+                true
             );
 
         case (actionTypes.SET_INGREDIENTS):
