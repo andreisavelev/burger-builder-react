@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {Redirect} from 'react-router-dom';
 
 import Input from '../../components/ui/Input/Input';
 import Button from "../../components/ui/Button/Button";
@@ -159,10 +160,12 @@ class Auth extends Component {
         }
 
         return (
-            <div className={classes.Auth}>
-                {errorMessage}
-                {form}
-            </div>
+            !this.props.isAuth ?
+                <div className={classes.Auth}>
+                    {errorMessage}
+                    {form}
+                </div>:
+                <Redirect to={'/'} />
         );
     }
 }
@@ -172,7 +175,8 @@ const mapStateToProps = state => {
         token: state.auth.token,
         userId: state.auth.userId,
         loading: state.auth.loading,
-        error: state.auth.error
+        error: state.auth.error,
+        isAuth: state.auth.token !== null
     }
 };
 

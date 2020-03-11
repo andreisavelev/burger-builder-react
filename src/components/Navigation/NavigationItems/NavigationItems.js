@@ -12,15 +12,19 @@ const navigationItems = ({isAuth}) => {
             Log out
         </NavigationItem>;
 
+    let orders = isAuth ?
+        <NavigationItem link="/orders">
+            Orders
+        </NavigationItem>:
+        null;
+
     return (
         <ul className={classes.NavigationItems}>
             <NavigationItem link="/" exact>
                 Burger Builder
             </NavigationItem>
-            <NavigationItem link="/orders">
-                Orders
-            </NavigationItem>
 
+            {orders}
             {authAction}
         </ul>
     );
