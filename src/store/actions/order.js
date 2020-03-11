@@ -88,13 +88,14 @@ export const fetchOrdersFailed = function (error) {
 /**
  * Async action creator to stating purchasing the burger
  * @param orderData {object}
+ * @param token {string}
  * @returns {function(...[*]=)}
  */
-export const purchaseBurger = function(orderData) {
+export const purchaseBurger = function(orderData, token) {
     return  function(dispatch) {
         dispatch(purchaseBurgerStart());
 
-        axios.post('/orders.json', orderData)
+        axios.post(`/orders.json?auth=${token}`, orderData)
             .then(response => {
                 dispatch(purchaseBurgerSuccess(response.data.name, orderData))
             })
@@ -106,13 +107,14 @@ export const purchaseBurger = function(orderData) {
 
 /**
  * Async action creator for fetching orders
+ * @param token {string}
  * @returns {function(...[*]=)}
  */
-export const fetchOrders = function() {
+export const fetchOrders = function(token) {
     return function (dispatch) {
         dispatch(fetchOrderStart());
 
-        axios.get('/orders.json')
+        axios.get(`/orders.json?auth=${token}`)
             .then(respons => {
                 let orders = [];
 
