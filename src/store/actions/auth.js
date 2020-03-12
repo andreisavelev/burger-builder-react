@@ -23,6 +23,8 @@ export const authFailed = error => {
 };
 
 export const logOut = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expirationDate');
     return {
         type: LOG_OUT
     }
@@ -40,6 +42,33 @@ export const checkAuthTimeout = expirationTime => {
         setTimeout(() => {
             dispatch(logOut())
         }, expirationTime * 1000); // Turn milliseconds to seconds
+    }
+};
+
+export const authCheckState = () => {
+    return dispatch => {
+        const token = localStorage.getItem('token');
+        let expirationDate = null;
+        let localId = null;
+        let expirationTime = null;
+
+        if (!token) {
+            dispatch(logOut());
+        } else {
+            localId = localStorage.getItem('localId');
+            expirationDate = new Date(localStorage.getItem('expirationDate'));
+            expirationTime = Math.floor((new Date(expirationDate).getTime() - new Date().getTime()) / 1000);
+
+            if (expirationDate > new Date()) {
+                dispatch(authSuccess({
+                    token,
+                    localId
+                }));
+                dispatch(checkAuthTimeout(expirationTime));
+            } else {
+                dispatch(logOut());
+            }
+        }
     }
 };
 
@@ -62,12 +91,17 @@ export const auth = (email, password, isSignUp) => {
             returnSecureToken: true
         })
             .then(response => {
-                const  {idToken, localId} = response.data;
+                const  {idToken, localId, expiresIn} = response.data;
+                const expirationDate = String(new Date(new Date().getTime() + expiresIn * 1000));
 
+                localStorage.setItem('token', idToken);
+                localStorage.setItem('localId', localId);
+                localStorage.setItem('expirationDate', expirationDate);
                 dispatch(authSuccess({
                     idToken,
                     localId
                 }));
+                dispatch(checkAuthTimeout(expiresIn))
             })
             .catch(error => {
                 dispatch(authFailed(error.response.data.error));
