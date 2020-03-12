@@ -16,27 +16,52 @@ class App extends Component {
     }
 
     render() {
+        let routes = (
+            <Switch>
+                <Route path={'/'}
+                       exact
+                       component={BurgerBuilder}/>
+                <Route path={'/auth'}
+                       component={Auth}/>
+                <Route component={() => <h1 style={{textAlign: 'center'}}>Sorry... something goes wrong...</h1>}/>
+            </Switch>
+        );
+
+        if (this.props.isAuth) {
+            routes = (
+                <Switch>
+                    <Route path={'/'}
+                           exact
+                           component={BurgerBuilder}/>
+                    <Route path={'/orders'}
+                           component={Orders}/> :
+                    <Route path={'/checkout'}
+                           component={Checkout}/>
+                    <Route path={'/logout'}
+                           component={Logout}/>
+                    <Route path={'/auth'}
+                           component={Auth}/>
+                    <Route component={() => <h1 style={{textAlign: 'center'}}>Sorry... something goes wrong...</h1>}/>
+                </Switch>
+            );
+        }
+
+
         return (
             <div>
                 <Layout>
-                    <Switch>
-                        <Route path={'/'}
-                               exact
-                               component={BurgerBuilder}/>
-                        <Route path={'/orders'}
-                               component={Orders}/>
-                        <Route path={'/checkout'}
-                               component={Checkout}/>
-                        <Route path={'/logout'}
-                               component={Logout}/>
-                        <Route path={'/auth'}
-                               component={Auth}/>
-                    </Switch>
+                    {routes}
                 </Layout>
             </div>
         );
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        isAuth: state.auth.token !== null
+    }
+};
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -46,4 +71,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default withRouter(connect(null, mapDispatchToProps)(App));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
