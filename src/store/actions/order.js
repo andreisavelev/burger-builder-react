@@ -19,7 +19,7 @@ export const purchaseInit = function () {
  * @param orderData {object}
  * @returns {{orderId: string|number, orderData: object, type: string}}
  */
-export const purchaseBurgerSuccess = function(id, orderData) {
+export const purchaseBurgerSuccess = function (id, orderData) {
     return {
         type: actionTypes.PURCHASE_BURGER_SUCCESS,
         orderId: id,
@@ -91,8 +91,8 @@ export const fetchOrdersFailed = function (error) {
  * @param token {string}
  * @returns {function(...[*]=)}
  */
-export const purchaseBurger = function(orderData, token) {
-    return  function(dispatch) {
+export const purchaseBurger = function (orderData, token) {
+    return function (dispatch) {
         dispatch(purchaseBurgerStart());
 
         axios.post(`/orders.json?auth=${token}`, orderData)
@@ -108,13 +108,14 @@ export const purchaseBurger = function(orderData, token) {
 /**
  * Async action creator for fetching orders
  * @param token {string}
+ * @param userId {string}
  * @returns {function(...[*]=)}
  */
-export const fetchOrders = function(token) {
+export const fetchOrders = function (token, userId) {
     return function (dispatch) {
         dispatch(fetchOrderStart());
 
-        axios.get(`/orders.json?auth=${token}`)
+        axios.get(`/orders.json?auth=${token}&orderBy="userId"&equalTo="${userId}"`)
             .then(respons => {
                 let orders = [];
 

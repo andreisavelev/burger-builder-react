@@ -128,6 +128,7 @@ class ContactData extends Component {
     orderHandler = event => {
         const orderData = {};
         const {orderForm} = this.state;
+
         for (let formElementId in orderForm) {
             if (orderForm.hasOwnProperty(formElementId)) {
                 orderData[formElementId] = orderForm[formElementId].value;
@@ -137,7 +138,8 @@ class ContactData extends Component {
         const order = {
             ingredients: this.props.ingredients,
             totalPrice: this.props.price,
-            customer: orderData
+            customer: orderData,
+            userId: this.props.userId
         };
 
         event.preventDefault();
@@ -233,7 +235,8 @@ const mapStateToProps = function (state) {
         ingredients: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
         loading: state.order.loading,
-        token: state.auth.token
+        token: state.auth.token,
+        userId: state.auth.userId
     };
 };
 
