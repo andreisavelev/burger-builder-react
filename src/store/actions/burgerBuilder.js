@@ -1,5 +1,4 @@
 import * as actionTypes from "./actionTypes";
-import axios from "../../axios-orders";
 
 /**
  * Action creator to add ingredient
@@ -48,17 +47,12 @@ export const fetchIngredientsFailed = function () {
 };
 
 /**
- * Async action creator to fetch ingredients and set correct state in depending on that result
- * @returns {function(...[*]=)}
+ * Aciton creator for ingredients
+ * @returns {{type: string}}
  */
 export const initIngredients = function () {
-  return function (dispatch) {
-    axios
-      .get("/ingredients.json")
-      .then((res) => dispatch(setIngredients(res.data)))
-      .catch(() => {
-        console.log(fetchIngredientsFailed());
-        dispatch(fetchIngredientsFailed());
-      });
+  console.log("inited");
+  return {
+    type: actionTypes.INIT_INGEREDIENTS,
   };
 };
