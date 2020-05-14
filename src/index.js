@@ -12,7 +12,7 @@ import registerServiceWorker from "./registerServiceWorker";
 import burgerBuilderReducer from "./store/reducers/burgerBuilder";
 import orderReducer from "./store/reducers/order";
 import authReducer from "./store/reducers/auth";
-import { wathcAuth } from "./store/sagas";
+import { wathcAuth, watchBurgerBuilder } from "./store/sagas";
 
 const composeEnhancer =
   (typeof window !== "undefined" &&
@@ -28,7 +28,10 @@ const store = createStore(
   rootReducer,
   composeEnhancer(applyMiddleware(thunk, sagaMiddleware))
 );
+
+/** watch sagas */
 sagaMiddleware.run(wathcAuth);
+sagaMiddleware.run(watchBurgerBuilder);
 
 const APP = (
   <Provider store={store}>

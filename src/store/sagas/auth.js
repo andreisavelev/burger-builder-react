@@ -87,3 +87,37 @@ export function* authUserSaga(action) {
     yield put(authFailed(error.response.data.error));
   }
 }
+
+/**
+ * Auto authorization saga
+ * @param {{type: string}} action
+ * @generator
+ */
+export function* authCheckSaga(action) {
+  const token = yield localStorage.getItem("token");
+  let expirationDate = null;
+  let localId = null;
+  let expirationTime = null;
+
+  if (!token) {
+    yield put(logOut());
+  } else {
+    localId = yield localStorage.getItem("localId");
+    expirationDate = yield new Date(localStorage.getItem("expirationDate"));
+    expirationTime = yield Math.floor(
+      (new Date(expirationDate).getTime() - new Date().getTime()) / 1000
+    );
+
+    if (expirationDate > new Date()) {
+      yield put(
+        authSuccess({
+          token,
+          localId,
+        })
+      );
+      yield put(checkAuthTimeout(expirationTime));
+    } else {
+      yield put(logOut());
+    }
+  }
+}
