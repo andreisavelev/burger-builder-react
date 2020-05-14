@@ -3,12 +3,14 @@ import {
   purchaseBurgerSuccess,
   purchaseBurgerFail,
   purchaseBurgerStart,
+  fetchOrderStart,
 } from "../order";
 import {
   PURCHASE_INIT,
   PURCHASE_BURGER_SUCCESS,
   PURCHASE_BURGER_FAIL,
   PURCHASE_BURGER_START,
+  FETCH_ORDERS_START,
 } from "../actionTypes";
 
 describe("Order actions", () => {
@@ -34,5 +36,9 @@ describe("Order actions", () => {
 
   it("should returns correct type after purchaseBurgerStart call", () => {
     expect(purchaseBurgerStart()).toEqual({ type: PURCHASE_BURGER_START });
+  });
+
+  it("should returns correct type after the fetchOrderStart call", () => {
+    expect(fetchOrderStart()).toEqual({ type: FETCH_ORDERS_START });
   });
 });
