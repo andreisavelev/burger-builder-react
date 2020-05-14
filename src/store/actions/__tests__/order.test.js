@@ -2,11 +2,13 @@ import {
   purchaseInit,
   purchaseBurgerSuccess,
   purchaseBurgerFail,
+  purchaseBurgerStart,
 } from "../order";
 import {
   PURCHASE_INIT,
   PURCHASE_BURGER_SUCCESS,
   PURCHASE_BURGER_FAIL,
+  PURCHASE_BURGER_START,
 } from "../actionTypes";
 
 describe("Order actions", () => {
@@ -22,11 +24,15 @@ describe("Order actions", () => {
     });
   });
 
-  it("should returns correct type and error data", () => {
+  it("should returns correct type and error data after purchaseBurgerFail", () => {
     const error = { test: "test" };
     expect(purchaseBurgerFail(error)).toEqual({
       type: PURCHASE_BURGER_FAIL,
       error,
     });
+  });
+
+  it("should returns correct type after purchaseBurgerStart call", () => {
+    expect(purchaseBurgerStart()).toEqual({ type: PURCHASE_BURGER_START });
   });
 });
