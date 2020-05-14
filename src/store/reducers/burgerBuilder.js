@@ -1,17 +1,17 @@
-import * as actionTypes from '../actions/actionTypes';
+import * as actionTypes from "../actions/actionTypes";
 
 const initialState = {
-    ingredients: null,
-    totalPrice: 4,
-    error: false,
-    building: false
+  ingredients: null,
+  totalPrice: 4,
+  error: false,
+  building: false,
 };
 
 const INGREDIENT_PRICES = {
-    salad: 0.5,
-    cheese: 0.4,
-    meat: 1.3,
-    bacon: 0.7
+  salad: 0.5,
+  cheese: 0.4,
+  meat: 1.3,
+  bacon: 0.7,
 };
 
 /**
@@ -23,16 +23,22 @@ const INGREDIENT_PRICES = {
  * @param newBuildingValue {boolean}
  * @returns {{totalPrice: number, ingredients: object}}
  */
-function getUpdatedState(state, action, newIngredientValue, newTotalPrice, newBuildingValue) {
-    return {
-        ...state,
-        ingredients: {
-            ...state.ingredients,
-            [action.ingredientName]: newIngredientValue
-        },
-        totalPrice: newTotalPrice,
-        building: newBuildingValue
-    };
+function getUpdatedState(
+  state,
+  action,
+  newIngredientValue,
+  newTotalPrice,
+  newBuildingValue
+) {
+  return {
+    ...state,
+    ingredients: {
+      ...state.ingredients,
+      [action.ingredientName]: newIngredientValue,
+    },
+    totalPrice: newTotalPrice,
+    building: newBuildingValue,
+  };
 }
 
 /**
@@ -42,20 +48,20 @@ function getUpdatedState(state, action, newIngredientValue, newTotalPrice, newBu
  * @returns {{ingredients: (null|{}|Array), error: boolean}}
  */
 function getFetchedStated(state, action) {
-    let ingredients = {...action.ingredients};
+  let ingredients = { ...action.ingredients };
 
-    return {
-        ...state,
-        ingredients: {
-            salad: ingredients.salad,
-            bacon: ingredients.bacon,
-            cheese: ingredients.cheese,
-            meat: ingredients.cheese
-        },
-        totalPrice: 4,
-        error: false,
-        building: false
-    }
+  return {
+    ...state,
+    ingredients: {
+      salad: ingredients.salad,
+      bacon: ingredients.bacon,
+      cheese: ingredients.cheese,
+      meat: ingredients.cheese,
+    },
+    totalPrice: 4,
+    error: false,
+    building: false,
+  };
 }
 
 /**
@@ -64,11 +70,11 @@ function getFetchedStated(state, action) {
  * @returns {{error: boolean}}
  */
 function getFailedFetchIngredientsState(state) {
-    return {
-        ...state,
-        building: false,
-        error: true
-    }
+  return {
+    ...state,
+    building: false,
+    error: true,
+  };
 }
 
 /**
@@ -80,35 +86,36 @@ function getFailedFetchIngredientsState(state) {
  * @returns {{}|{totalPrice: number, ingredients: {bacon: number, salad: number, meat: number, cheese: number}}}
  */
 const reducer = function (state = initialState, action) {
-    switch (action.type) {
-        case (actionTypes.ADD_INGREDIENT):
-            return getUpdatedState(
-                state,
-                action,
-                state.ingredients[action.ingredientName] + 1,
-                state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
-                true
-            );
+  switch (action.type) {
+    case actionTypes.ADD_INGREDIENT:
+      return getUpdatedState(
+        state,
+        action,
+        state.ingredients[action.ingredientName] + 1,
+        state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+        true
+      );
 
-        case (actionTypes.REMOVE_INGREDIENT):
-            return getUpdatedState(
-                state,
-                action,
-                state.ingredients[action.ingredientName] > 0 ? state.ingredients[action.ingredientName] - 1 : 0,
-                state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
-                true
-            );
+    case actionTypes.REMOVE_INGREDIENT:
+      return getUpdatedState(
+        state,
+        action,
+        state.ingredients[action.ingredientName] > 0
+          ? state.ingredients[action.ingredientName] - 1
+          : 0,
+        state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+        true
+      );
 
-        case (actionTypes.SET_INGREDIENTS):
-            return getFetchedStated(state, action);
+    case actionTypes.SET_INGREDIENTS:
+      return getFetchedStated(state, action);
 
-        case (actionTypes.FETCH_INGREDIENTS_FAILED):
-            return getFailedFetchIngredientsState(state);
+    case actionTypes.FETCH_INGREDIENTS_FAILED:
+      return getFailedFetchIngredientsState(state);
 
-        default:
-            return state;
-
-    }
+    default:
+      return state;
+  }
 };
 
 export default reducer;

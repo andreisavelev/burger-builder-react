@@ -1,12 +1,12 @@
 .Order {
-    box-sizing: border-box;
-    width: 100%;
-    margin: 10px auto;
-    padding: 10px;
-    border: 1px solid #eee;
-    box-shadow: 0 2px 3px #ccc;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 3px #ccc;
 }
 
-.Order th  {
-    text-align: right;
+.Order th {
+  text-align: right;
 }

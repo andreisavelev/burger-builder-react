@@ -1,6 +1,6 @@
-export default function updateObject (oldObject, updateProperties) {
-    return {
-        ...oldObject,
-        ...updateProperties
-    };
-};
+export default function updateObject(oldObject, updateProperties) {
+  return {
+    ...oldObject,
+    ...updateProperties,
+  };
+}

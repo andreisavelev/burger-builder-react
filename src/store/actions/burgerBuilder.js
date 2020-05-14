@@ -1,5 +1,5 @@
-import * as actionTypes from './actionTypes';
-import axios from '../../axios-orders';
+import * as actionTypes from "./actionTypes";
+import axios from "../../axios-orders";
 
 /**
  * Action creator to add ingredient
@@ -7,10 +7,10 @@ import axios from '../../axios-orders';
  * @returns {{ingredientName: string, type: string}}
  */
 export const addIngredient = function (ingredientName) {
-    return {
-        type: actionTypes.ADD_INGREDIENT,
-        ingredientName
-    };
+  return {
+    type: actionTypes.ADD_INGREDIENT,
+    ingredientName,
+  };
 };
 
 /**
@@ -19,10 +19,10 @@ export const addIngredient = function (ingredientName) {
  * @returns {{ingredientName: string, type: string}}
  */
 export const removeIngredient = function (ingredientName) {
-    return {
-        type: actionTypes.REMOVE_INGREDIENT,
-        ingredientName
-    };
+  return {
+    type: actionTypes.REMOVE_INGREDIENT,
+    ingredientName,
+  };
 };
 
 /**
@@ -30,11 +30,11 @@ export const removeIngredient = function (ingredientName) {
  * @param ingredients {object}
  * @returns {{action: string, ingredients: array}}
  */
-export const setIngredients = function(ingredients) {
-    return {
-        type: actionTypes.SET_INGREDIENTS,
-        ingredients
-    }
+export const setIngredients = function (ingredients) {
+  return {
+    type: actionTypes.SET_INGREDIENTS,
+    ingredients,
+  };
 };
 
 /**
@@ -42,9 +42,9 @@ export const setIngredients = function(ingredients) {
  * @returns {{type: string}}
  */
 export const fetchIngredientsFailed = function () {
-    return {
-        type: actionTypes.FETCH_INGREDIENTS_FAILED
-    }
+  return {
+    type: actionTypes.FETCH_INGREDIENTS_FAILED,
+  };
 };
 
 /**
@@ -52,12 +52,13 @@ export const fetchIngredientsFailed = function () {
  * @returns {function(...[*]=)}
  */
 export const initIngredients = function () {
-    return function(dispatch) {
-        axios.get('/ingredients.json')
-            .then(res => dispatch(setIngredients(res.data)))
-            .catch(() => {
-                console.log(fetchIngredientsFailed());
-                dispatch(fetchIngredientsFailed())
-            });
-    }
+  return function (dispatch) {
+    axios
+      .get("/ingredients.json")
+      .then((res) => dispatch(setIngredients(res.data)))
+      .catch(() => {
+        console.log(fetchIngredientsFailed());
+        dispatch(fetchIngredientsFailed());
+      });
+  };
 };

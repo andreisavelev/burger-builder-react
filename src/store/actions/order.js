@@ -1,5 +1,5 @@
-import * as actionTypes from './actionTypes';
-import axios from '../../axios-orders';
+import * as actionTypes from "./actionTypes";
+import axios from "../../axios-orders";
 
 // SYNC ACTION CREATORS
 
@@ -8,9 +8,9 @@ import axios from '../../axios-orders';
  * @returns {{type: string}}
  */
 export const purchaseInit = function () {
-    return {
-        type: actionTypes.PURCHASE_INIT
-    }
+  return {
+    type: actionTypes.PURCHASE_INIT,
+  };
 };
 
 /**
@@ -20,11 +20,11 @@ export const purchaseInit = function () {
  * @returns {{orderId: string|number, orderData: object, type: string}}
  */
 export const purchaseBurgerSuccess = function (id, orderData) {
-    return {
-        type: actionTypes.PURCHASE_BURGER_SUCCESS,
-        orderId: id,
-        orderData
-    }
+  return {
+    type: actionTypes.PURCHASE_BURGER_SUCCESS,
+    orderId: id,
+    orderData,
+  };
 };
 
 /**
@@ -33,10 +33,10 @@ export const purchaseBurgerSuccess = function (id, orderData) {
  * @returns {{type: string, error: object}}
  */
 export const purchaseBurgerFail = function (error) {
-    return {
-        type: actionTypes.PURCHASE_BURGER_FAIL,
-        error
-    }
+  return {
+    type: actionTypes.PURCHASE_BURGER_FAIL,
+    error,
+  };
 };
 
 /**
@@ -44,9 +44,9 @@ export const purchaseBurgerFail = function (error) {
  * @returns {{type: string}}
  */
 export const purchaseBurgerStart = function () {
-    return {
-        type: actionTypes.PURCHASE_BURGER_START
-    }
+  return {
+    type: actionTypes.PURCHASE_BURGER_START,
+  };
 };
 
 /**
@@ -54,9 +54,9 @@ export const purchaseBurgerStart = function () {
  * @returns {{type: string}}
  */
 export const fetchOrderStart = function () {
-    return {
-        type: actionTypes.FETCH_ORDERS_START
-    }
+  return {
+    type: actionTypes.FETCH_ORDERS_START,
+  };
 };
 
 /**
@@ -65,10 +65,10 @@ export const fetchOrderStart = function () {
  * @returns {{orders: object[], type: string}}
  */
 export const fetchOrdersSuccess = function (orders) {
-    return {
-        type: actionTypes.FETCH_ORDERS_SUCCESS,
-        orders
-    }
+  return {
+    type: actionTypes.FETCH_ORDERS_SUCCESS,
+    orders,
+  };
 };
 
 /**
@@ -77,10 +77,10 @@ export const fetchOrdersSuccess = function (orders) {
  * @returns {{type: string, error: object}}
  */
 export const fetchOrdersFailed = function (error) {
-    return {
-        type: actionTypes.FETCH_ORDERS_FAILED,
-        error
-    }
+  return {
+    type: actionTypes.FETCH_ORDERS_FAILED,
+    error,
+  };
 };
 
 // ASYNC ACTION CREATORS
@@ -92,17 +92,18 @@ export const fetchOrdersFailed = function (error) {
  * @returns {function(...[*]=)}
  */
 export const purchaseBurger = function (orderData, token) {
-    return function (dispatch) {
-        dispatch(purchaseBurgerStart());
+  return function (dispatch) {
+    dispatch(purchaseBurgerStart());
 
-        axios.post(`/orders.json?auth=${token}`, orderData)
-            .then(response => {
-                dispatch(purchaseBurgerSuccess(response.data.name, orderData))
-            })
-            .catch(error => {
-                dispatch(purchaseBurgerFail(error))
-            });
-    }
+    axios
+      .post(`/orders.json?auth=${token}`, orderData)
+      .then((response) => {
+        dispatch(purchaseBurgerSuccess(response.data.name, orderData));
+      })
+      .catch((error) => {
+        dispatch(purchaseBurgerFail(error));
+      });
+  };
 };
 
 /**
@@ -112,24 +113,25 @@ export const purchaseBurger = function (orderData, token) {
  * @returns {function(...[*]=)}
  */
 export const fetchOrders = function (token, userId) {
-    return function (dispatch) {
-        dispatch(fetchOrderStart());
+  return function (dispatch) {
+    dispatch(fetchOrderStart());
 
-        axios.get(`/orders.json?auth=${token}&orderBy="userId"&equalTo="${userId}"`)
-            .then(respons => {
-                let orders = [];
+    axios
+      .get(`/orders.json?auth=${token}&orderBy="userId"&equalTo="${userId}"`)
+      .then((respons) => {
+        let orders = [];
 
-                for (let item in respons.data) {
-                    if (respons.data.hasOwnProperty(item)) {
-                        orders.push({
-                            id: item,
-                            ...respons.data[item]
-                        });
-                    }
-                }
+        for (let item in respons.data) {
+          if (respons.data.hasOwnProperty(item)) {
+            orders.push({
+              id: item,
+              ...respons.data[item],
+            });
+          }
+        }
 
-                dispatch(fetchOrdersSuccess(orders));
-            })
-            .catch(error => dispatch(fetchOrdersFailed(error)));
-    }
+        dispatch(fetchOrdersSuccess(orders));
+      })
+      .catch((error) => dispatch(fetchOrdersFailed(error)));
+  };
 };
