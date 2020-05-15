@@ -4,6 +4,8 @@ import {
   purchaseBurgerFail,
   purchaseBurgerStart,
   fetchOrderStart,
+  fetchOrdersSuccess,
+  fetchOrdersFailed,
 } from "../order";
 import {
   PURCHASE_INIT,
@@ -11,6 +13,8 @@ import {
   PURCHASE_BURGER_FAIL,
   PURCHASE_BURGER_START,
   FETCH_ORDERS_START,
+  FETCH_ORDERS_SUCCESS,
+  FETCH_ORDERS_FAILED,
 } from "../actionTypes";
 
 describe("Order actions", () => {
@@ -40,5 +44,22 @@ describe("Order actions", () => {
 
   it("should returns correct type after the fetchOrderStart call", () => {
     expect(fetchOrderStart()).toEqual({ type: FETCH_ORDERS_START });
+  });
+
+  it("should returns correct type and order data after the fetchOrdersSuccess call", () => {
+    const orders = [{ id: 1 }, { id: 2 }];
+
+    expect(fetchOrdersSuccess(orders)).toEqual({
+      type: FETCH_ORDERS_SUCCESS,
+      orders,
+    });
+  });
+
+  it("should returns correct type and error after the fetchOrdersFailed call", () => {
+    const error = { test: "test" };
+    expect(fetchOrdersFailed(error)).toEqual({
+      type: FETCH_ORDERS_FAILED,
+      error,
+    });
   });
 });
