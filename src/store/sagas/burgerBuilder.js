@@ -7,7 +7,6 @@ import { fetchIngredientsFailed, setIngredients } from "../actions";
  * @generator
  */
 export function* initIngredientsSaga() {
-  yield console.log("started");
   try {
     const response = yield axios.get("/ingredients.json");
     yield put(setIngredients(response.data));
