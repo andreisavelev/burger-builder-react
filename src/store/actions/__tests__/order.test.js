@@ -1,5 +1,6 @@
 import {
   purchaseInit,
+  purchaseBurger,
   purchaseBurgerSuccess,
   purchaseBurgerFail,
   purchaseBurgerStart,
@@ -8,6 +9,7 @@ import {
   fetchOrdersFailed,
 } from "../order";
 import {
+  PURCHASE_BURGER,
   PURCHASE_INIT,
   PURCHASE_BURGER_SUCCESS,
   PURCHASE_BURGER_FAIL,
@@ -20,6 +22,19 @@ import {
 describe("Order actions", () => {
   it("should contains type PURCHASE_INIT", () => {
     expect(purchaseInit().type).toEqual(PURCHASE_INIT);
+  });
+
+  it("should returns the correct type and a payload", () => {
+    const orderData = { salad: 1, seeds: 2, meat: 1 };
+    const token = "test";
+
+    expect(purchaseBurger(orderData, token)).toEqual({
+      type: PURCHASE_BURGER,
+      payload: {
+        orderData,
+        token: "test",
+      },
+    });
   });
 
   it("should returns correct order data from purchaseBurgerSuccess action creator", () => {

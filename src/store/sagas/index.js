@@ -1,4 +1,4 @@
-import { takeEvery } from "redux-saga/effects";
+import { takeEvery, takeLatest } from "redux-saga/effects";
 
 import {
   logOutSaga,
@@ -12,8 +12,11 @@ import {
   AUTH_USER,
   AUTH_CHECK_STATE,
   INIT_INGEREDIENTS,
+  PURCHASE_BURGER,
+  FETCH_ORDER,
 } from "../actions/actionTypes";
 import { initIngredientsSaga } from "./burgerBuilder";
+import { purchaseBurgerSaga, fetchOrderSaga } from "./order";
 
 /**
  * Dispatch logout saga when AUTH_INITIATE_LOG_OUT action occures
@@ -35,6 +38,14 @@ export function* wathcAuth() {
 }
 
 export function* watchBurgerBuilder() {
-  yield console.log("watched");
   yield takeEvery(INIT_INGEREDIENTS, initIngredientsSaga);
+}
+
+/**
+ * Subscribe on all purchasing and ordering actions
+ * @generator
+ */
+export function* watchOrder() {
+  yield takeLatest(PURCHASE_BURGER, purchaseBurgerSaga);
+  yield takeLatest(FETCH_ORDER, fetchOrderSaga);
 }

@@ -83,26 +83,19 @@ export const fetchOrdersFailed = function (error) {
   };
 };
 
-// ASYNC ACTION CREATORS
-
 /**
  * Async action creator to stating purchasing the burger
  * @param orderData {object}
  * @param token {string}
- * @returns {function(...[*]=)}
+ * @returns {{type: string, payload: {orderData: object, token: string}}}
  */
 export const purchaseBurger = function (orderData, token) {
-  return function (dispatch) {
-    dispatch(purchaseBurgerStart());
-
-    axios
-      .post(`/orders.json?auth=${token}`, orderData)
-      .then((response) => {
-        dispatch(purchaseBurgerSuccess(response.data.name, orderData));
-      })
-      .catch((error) => {
-        dispatch(purchaseBurgerFail(error));
-      });
+  return {
+    type: actionTypes.PURCHASE_BURGER,
+    payload: {
+      orderData,
+      token,
+    },
   };
 };
 
@@ -110,28 +103,14 @@ export const purchaseBurger = function (orderData, token) {
  * Async action creator for fetching orders
  * @param token {string}
  * @param userId {string}
- * @returns {function(...[*]=)}
+ * @returns {{type: string, payload: {token: string, userId: string}}}
  */
 export const fetchOrders = function (token, userId) {
-  return function (dispatch) {
-    dispatch(fetchOrderStart());
-
-    axios
-      .get(`/orders.json?auth=${token}&orderBy="userId"&equalTo="${userId}"`)
-      .then((respons) => {
-        let orders = [];
-
-        for (let item in respons.data) {
-          if (respons.data.hasOwnProperty(item)) {
-            orders.push({
-              id: item,
-              ...respons.data[item],
-            });
-          }
-        }
-
-        dispatch(fetchOrdersSuccess(orders));
-      })
-      .catch((error) => dispatch(fetchOrdersFailed(error)));
+  return {
+    type: actionTypes.FETCH_ORDER,
+    payload: {
+      userId,
+      token,
+    },
   };
 };
