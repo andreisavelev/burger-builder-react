@@ -1,7 +1,4 @@
 import * as actionTypes from "./actionTypes";
-import axios from "../../axios-orders";
-
-// SYNC ACTION CREATORS
 
 /**
  * Sync action creator for initialization of burger purchasing
