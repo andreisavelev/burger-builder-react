@@ -25,7 +25,7 @@ import { purchaseBurgerSaga, fetchOrderSaga } from "./order";
  * @yields logOutSaga
  */
 export function* wathcAuth() {
-  all([
+  yield all([
     takeEvery(AUTH_INITIATE_LOG_OUT, logOutSaga),
 
     /** attach a listener for AUTH_CHEC_TIMEOUT */

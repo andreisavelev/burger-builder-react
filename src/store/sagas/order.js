@@ -13,7 +13,7 @@ import {
 /**
  * Saga that handles burger purchasing from the very begining like showing a loader
  * till the end of the day like asyn cation and hiding the loader
- * @param {{payload: {token: string, orderData: object}}, type: string} action
+ * @param {{payload: {token: string, orderData: object}, type: string}} action
  * @generator
  */
 export function* purchaseBurgerSaga(action) {

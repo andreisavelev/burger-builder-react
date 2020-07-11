@@ -69,14 +69,14 @@ export function* authUserSaga(action) {
     );
 
     /** store credentials in the local storage */
-    yield localStorage.setItem("token", idToken);
-    yield localStorage.setItem("localId", localId);
-    yield localStorage.setItem("expirationDate", expirationDate);
+    yield call([localStorage, 'setItem'], "token", idToken);
+    yield call([localStorage, 'setItem'], "localId", localId);
+    yield call([localStorage, 'setItem'], "expirationDate", expirationDate);
 
     /** dispatch success action */
     yield put(
       authSuccess({
-        idToken,
+        token: idToken,
         localId,
       })
     );
