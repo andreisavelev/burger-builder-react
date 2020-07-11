@@ -41,7 +41,7 @@ const App = (props) => {
       <Switch>
         <Route path={"/"} exact component={BurgerBuilder}/>
         <Route path={"/orders"} component={AsyncOrders}/> :
-        <Route path={"/checkout"} component={AsyncCheckout}/>
+        <Route path={"/checkout"} render={(props) => <AsyncCheckout {...props}/>}/>
         <Route path={"/logout"} component={Logout}/>
         <Route path={"/auth"} component={AsyncAuth}/>
         <Route
