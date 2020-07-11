@@ -1,25 +1,49 @@
-import React, { Component } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
 import Layout from "./components/Layout/Layout";
 import BurgerBuilder from "./containers/BurgerBuilder/BurgerBuilder";
-import Checkout from "./containers/Checkout/Checkout";
-import Orders from "./containers/Orders/Orders";
-import Auth from "./containers/Auth/Auth";
 import Logout from "./containers/Auth/Logout/Logout";
 import { authCheckState } from "./store/actions";
 
-class App extends Component {
-  componentDidMount() {
-    this.props.onTryAutoAuth();
-  }
+const AsyncAuth = lazy(() => {
+  return import("./containers/Auth/Auth");
+});
+const AsyncCheckout = lazy(() => {
+  return import("./containers/Checkout/Checkout");
+});
+const AsyncOrders = lazy(() => {
+  return import("./containers/Orders/Orders");
+});
 
-  render() {
-    let routes = (
+const App = (props) => {
+  useEffect(() => {
+    props.onTryAutoAuth();
+  }, []);
+
+  let routes = (
+    <Switch>
+      <Route path={"/"} exact component={BurgerBuilder}/>
+      <Route path={"/auth"} component={AsyncAuth}/>
+      <Route
+        component={() => (
+          <h1 style={{ textAlign: "center" }}>
+            Sorry... something goes wrong...
+          </h1>
+        )}
+      />
+    </Switch>
+  );
+
+  if (this.props.isAuth) {
+    routes = (
       <Switch>
-        <Route path={"/"} exact component={BurgerBuilder} />
-        <Route path={"/auth"} component={Auth} />
+        <Route path={"/"} exact component={BurgerBuilder}/>
+        <Route path={"/orders"} component={AsyncOrders}/> :
+        <Route path={"/checkout"} component={AsyncCheckout}/>
+        <Route path={"/logout"} component={Logout}/>
+        <Route path={"/auth"} component={AsyncAuth}/>
         <Route
           component={() => (
             <h1 style={{ textAlign: "center" }}>
@@ -29,33 +53,18 @@ class App extends Component {
         />
       </Switch>
     );
-
-    if (this.props.isAuth) {
-      routes = (
-        <Switch>
-          <Route path={"/"} exact component={BurgerBuilder} />
-          <Route path={"/orders"} component={Orders} /> :
-          <Route path={"/checkout"} component={Checkout} />
-          <Route path={"/logout"} component={Logout} />
-          <Route path={"/auth"} component={Auth} />
-          <Route
-            component={() => (
-              <h1 style={{ textAlign: "center" }}>
-                Sorry... something goes wrong...
-              </h1>
-            )}
-          />
-        </Switch>
-      );
-    }
-
-    return (
-      <div>
-        <Layout>{routes}</Layout>
-      </div>
-    );
   }
-}
+
+  return (
+    <div>
+      <Layout>
+        <Suspense fallback={<p>Loading...</p>}>
+          {routes}
+        </Suspense>
+      </Layout>
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
