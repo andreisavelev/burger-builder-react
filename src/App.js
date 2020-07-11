@@ -36,7 +36,7 @@ const App = (props) => {
     </Switch>
   );
 
-  if (this.props.isAuth) {
+  if (props.isAuth) {
     routes = (
       <Switch>
         <Route path={"/"} exact component={BurgerBuilder}/>
