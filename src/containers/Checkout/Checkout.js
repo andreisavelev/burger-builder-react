@@ -22,7 +22,7 @@ const Checkout = (props) => {
   if (props.ingredients) {
     purchasedRedirect = props.purchased ? <Redirect to={"/"}/> : null;
     summary = (
-      <Aux>
+      <div style={{ marginTop: '76px' }}>
         {purchasedRedirect}
         <CheckoutSummary
           ingredients={props.ingredients}
@@ -33,7 +33,7 @@ const Checkout = (props) => {
           path={`${props.match.path}/contact-data`}
           component={ContactData}
         />
-      </Aux>
+      </div>
     );
   }
 

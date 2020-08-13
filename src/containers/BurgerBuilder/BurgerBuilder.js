@@ -61,7 +61,10 @@ const BurgerBuilder =  memo((props) => {
 
     if (props.ingredients) {
       burger = (
-        <Aux>
+        <div style={{
+          display: 'grid',
+          gridAutoRows: '100% 318px'
+        }}>
           <Burger ingredients={props.ingredients} />
           <BuildControls
             ingredientAdded={props.onIngredientAdded}
@@ -72,7 +75,7 @@ const BurgerBuilder =  memo((props) => {
             isAuth={props.isAuthenticated}
             price={props.totalPrice}
           />
-        </Aux>
+        </div>
       );
 
       orderSummary = (
@@ -93,12 +96,12 @@ const BurgerBuilder =  memo((props) => {
 
     return (
       <Aux>
-        <Modal
+        {purchasing && (<Modal
           show={purchasing}
           modalClosed={purchaseCancelHandler}
         >
           {orderSummary}
-        </Modal>
+        </Modal>)}
         {burger}
       </Aux>
     );

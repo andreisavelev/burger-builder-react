@@ -25,7 +25,7 @@ const Orders = memo(props => {
   }
 
   return (
-    <div>{ordersList}</div>
+    <div style={{ marginTop: '76px' }}>{ordersList}</div>
   );
 });
 

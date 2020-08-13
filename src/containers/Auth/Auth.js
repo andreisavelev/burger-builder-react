@@ -168,9 +168,11 @@ class Auth extends Component {
     }
 
     return !this.props.isAuth ? (
-      <div className={classes.Auth}>
-        {errorMessage}
-        {form}
+      <div className={classes.AuthWrapper}>
+        <div className={classes.Auth}>
+          {errorMessage}
+          {form}
+        </div>
       </div>
     ) : (
       <Redirect to={this.props.authRedirectPath} />

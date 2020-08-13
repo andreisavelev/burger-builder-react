@@ -1,4 +1,17 @@
+.AuthWrapper {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+  grid-template-areas:
+        ". a a ."
+        ". a a .";
+}
+
 .Auth {
+  grid-area: a;
+  justify-self: center;
+  align-self: center;
   box-sizing: border-box;
   box-shadow: 0 2px 3px #ccc;
   border: 1px solid #eee;
