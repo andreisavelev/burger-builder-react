@@ -28,6 +28,7 @@
     "fs-extra": "3.0.1",
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
+    "lodash": "^4.17.19",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
@@ -98,6 +99,7 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "miragejs": "^0.1.38",

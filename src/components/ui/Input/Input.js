@@ -1,5 +1,5 @@
-import React from "react";
-
+import React, { memo } from "react";
+import { isBoolean } from 'lodash/fp';
 import classes from "./Input.css";
 
 /**
@@ -7,22 +7,22 @@ import classes from "./Input.css";
  * @param props
  * @returns {*}
  */
-const input = function (props) {
+const Input = memo(({ valid, touched, elementType, elementConfig, value, changed, label }) => {
   const inputStyleArray = [classes.InputElement];
   let inputElement = null;
 
-  if (!props.valid && props.touched) {
+  if (isBoolean(valid) && !valid && touched) {
     inputStyleArray.push(classes.Invalid);
   }
 
-  switch (props.elementType) {
+  switch (elementType) {
     case "input":
       inputElement = (
         <input
           className={inputStyleArray.join(" ")}
-          {...props.elementConfig}
-          onChange={props.changed}
-          value={props.value}
+          {...elementConfig}
+          onChange={changed}
+          value={value}
         />
       );
       break;
@@ -31,9 +31,9 @@ const input = function (props) {
       inputElement = (
         <textarea
           className={inputStyleArray.join(" ")}
-          {...props.elementConfig}
-          onChange={props.changed}
-          value={props.value}
+          {...elementConfig}
+          onChange={changed}
+          value={value}
         />
       );
       break;
@@ -42,10 +42,10 @@ const input = function (props) {
       inputElement = (
         <select
           className={inputStyleArray.join(" ")}
-          onChange={props.changed}
-          value={props.value}
+          onChange={changed}
+          value={value}
         >
-          {props.elementConfig.options.map((option) => (
+          {elementConfig.options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.displayValue}
             </option>
@@ -58,19 +58,19 @@ const input = function (props) {
       inputElement = (
         <input
           className={inputStyleArray.join(" ")}
-          {...props.elementConfig}
-          onChange={props.changed}
-          value={props.value}
+          {...elementConfig}
+          onChange={changed}
+          value={value}
         />
       );
   }
 
   return (
     <div className={classes.Input}>
-      <label className={classes.Label}>{props.label}</label>
+      <label className={classes.Label}>{label}</label>
       {inputElement}
     </div>
   );
-};
+});
 
-export default input;
+export default Input;

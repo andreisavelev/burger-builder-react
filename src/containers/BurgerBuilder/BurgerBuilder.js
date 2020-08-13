@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { memo, useState, useCallback, useEffect } from "react";
 import { connect } from "react-redux";
 
 import Aux from "../../hoc/Auxiliary";
@@ -12,21 +12,16 @@ import axios from "../../axios-orders";
 import * as burgerBuilderActions from "../../store/actions/";
 
 /**
- * @class
- * @classdesc Main burger builder component
- * @extends React.Component
+ * Container for the burger controls
  */
-class BurgerBuilder extends Component {
-  state = {
-    purchasable: false,
-    purchasing: false,
-  };
+const BurgerBuilder =  memo((props) => {
+  const [purchasing, setPurchasing] = useState(false);
 
-  componentDidMount() {
-    this.props.onInitIngredients();
-  }
+  useEffect(() => {
+    props.onInitIngredients();
+  }, []);
 
-  updatePurchaseState(ingredients) {
+  const updatePurchaseState = useCallback((ingredients) => {
     const sum = Object.keys(ingredients)
       .map((igKey) => {
         return ingredients[igKey];
@@ -35,58 +30,57 @@ class BurgerBuilder extends Component {
         return sum + el;
       }, 0);
     return sum > 0;
-  }
+  }, []);
 
-  purchaseHandler = () => {
-    if (this.props.isAuthenticated) {
-      this.setState({ purchasing: true });
+  const purchaseHandler = useCallback(() => {
+    if (props.isAuthenticated) {
+      setPurchasing(true);
     } else {
-      this.props.onSetAuthRedirectPath("/auth");
+      props.history.push("/auth");
     }
-  };
+  }, [setPurchasing]);
 
-  purchaseCancelHandler = () => {
-    this.setState({ purchasing: false });
-  };
+  const purchaseCancelHandler = useCallback(() => {
+    setPurchasing(false);
+  }, [setPurchasing]);
 
-  purchaseContinueHandler = () => {
-    this.props.onInitPurchase();
-    this.props.history.push("/checkout");
-  };
+  const purchaseContinueHandler = useCallback(() => {
+    props.onInitPurchase();
+    props.history.push("/checkout");
+  }, []);
 
-  render() {
     const disabledInfo = {
-      ...this.props.ingredients,
+      ...props.ingredients,
     };
     let orderSummary = null;
-    let burger = this.props.error ? (
+    let burger = props.error ? (
       <p>Ingredients can`t be loaded!</p>
     ) : (
       <Spinner />
     );
 
-    if (this.props.ingredients) {
+    if (props.ingredients) {
       burger = (
         <Aux>
-          <Burger ingredients={this.props.ingredients} />
+          <Burger ingredients={props.ingredients} />
           <BuildControls
-            ingredientAdded={this.props.onIngredientAdded}
-            ingredientRemoved={this.props.onIngredientRemoved}
+            ingredientAdded={props.onIngredientAdded}
+            ingredientRemoved={props.onIngredientRemoved}
             disabled={disabledInfo}
-            purchasable={this.updatePurchaseState(this.props.ingredients)}
-            ordered={this.purchaseHandler}
-            isAuth={this.props.isAuthenticated}
-            price={this.props.totalPrice}
+            purchasable={updatePurchaseState(props.ingredients)}
+            ordered={purchaseHandler}
+            isAuth={props.isAuthenticated}
+            price={props.totalPrice}
           />
         </Aux>
       );
 
       orderSummary = (
         <OrderSummary
-          ingredients={this.props.ingredients}
-          price={this.props.totalPrice}
-          purchaseCancelled={this.purchaseCancelHandler}
-          purchaseContinued={this.purchaseContinueHandler}
+          ingredients={props.ingredients}
+          price={props.totalPrice}
+          purchaseCancelled={purchaseCancelHandler}
+          purchaseContinued={purchaseContinueHandler}
         />
       );
     }
@@ -100,16 +94,15 @@ class BurgerBuilder extends Component {
     return (
       <Aux>
         <Modal
-          show={this.state.purchasing}
-          modalClosed={this.purchaseCancelHandler}
+          show={purchasing}
+          modalClosed={purchaseCancelHandler}
         >
           {orderSummary}
         </Modal>
         {burger}
       </Aux>
     );
-  }
-}
+});
 
 const mapStateToProps = function (state) {
   return {
