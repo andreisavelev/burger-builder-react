@@ -51,7 +51,6 @@ export const fetchIngredientsFailed = function () {
  * @returns {{type: string}}
  */
 export const initIngredients = function () {
-  console.log("inited");
   return {
     type: actionTypes.INIT_INGEREDIENTS,
   };
