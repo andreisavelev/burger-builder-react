@@ -173,8 +173,9 @@ const ContactData = memo((props) => {
       .map((item) => (item.validation ? item.validation.valid : true))
       .filter((item) => !item);
 
+    console.log(validFormElements);
     setOrderForm(updatedOrderForm);
-    setFormIsValid(!!validFormElements.length);
+    setFormIsValid(!validFormElements.length);
   }, [orderForm, setOrderForm, setFormIsValid]);
 
   /**
@@ -191,7 +192,6 @@ const ContactData = memo((props) => {
       });
     }
   }
-  console.log(formIsValid);
 
   let form = (
     <form onSubmit={orderHandler}>
@@ -206,7 +206,7 @@ const ContactData = memo((props) => {
           value={item.config.value}
         />
       ))}
-      <Button btnType={"Success"} disabled={formIsValid}>
+      <Button btnType={"Success"} disabled={!formIsValid}>
         ORDER
       </Button>
     </form>
