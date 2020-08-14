@@ -1,22 +1,23 @@
-import React, { Component } from "react";
+import React, { memo, useEffect } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 import { logOut } from "../../../store/actions/index";
 
 /**
- * @class
- * @classdesc Logout and redirect to the index page
+ *
+ * @param {function} onLogout
+ * @returns {JSX.Element}
+ * @constructor
  */
-class Logout extends Component {
-  componentDidMount() {
-    this.props.onLogout();
-  }
+const Logout = ({ onLogout }) => {
+  useEffect(() => {
+    onLogout();
+  }, []);
 
-  render() {
+
     return <Redirect to={"/"} />;
-  }
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -24,4 +25,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Logout);
+export default connect(null, mapDispatchToProps)(memo(Logout));

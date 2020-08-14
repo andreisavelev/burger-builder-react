@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect, memo, useCallback } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
@@ -9,8 +9,15 @@ import { auth, setAuthRedirectPath } from "../../store/actions/index";
 import Aux from "../../hoc/Auxiliary";
 import Spinner from "../../components/ui/Spinner/Spinner";
 
-class Auth extends Component {
-  state = {
+/**
+ *
+ * @param {Object} props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const Auth = (props) => {
+
+  const [authForm, setAuthForm] = useState({
     controls: {
       email: {
         elementType: "input",
@@ -42,9 +49,8 @@ class Auth extends Component {
         touched: false,
       },
     },
-
-    isSignUp: true,
-  };
+  });
+  const [isSignUp, setIsSignUp] = useState(false);
 
   /**
    * Run validation checks
@@ -52,7 +58,7 @@ class Auth extends Component {
    * @param rule
    * @returns {boolean}
    */
-  checkValidity(value, rule) {
+  const checkValidity = useCallback((value, rule) => {
     let isValid = true;
 
     if (rule && rule.required) {
@@ -60,125 +66,121 @@ class Auth extends Component {
     }
 
     return isValid;
-  }
+  }, []);
 
-  onInputChangedHandler = (event, controlName) => {
+  const onInputChangedHandler = useCallback((event, controlName) => {
     const updatedControls = {
-      ...this.state.controls,
+      ...authForm.controls,
       [controlName]: {
-        ...this.state.controls[controlName],
+        ...authForm.controls[controlName],
         value: event.target.value,
         validation: {
-          ...this.state.controls[controlName].validation,
-          valid: this.checkValidity(
+          ...authForm.controls[controlName].validation,
+          valid: checkValidity(
             event.target.value,
-            this.state.controls[controlName].validation
+            authForm.controls[controlName].validation,
           ),
         },
         touched: true,
       },
     };
 
-    this.setState({
-      controls: updatedControls,
+    setAuthForm({
+      controls: {
+        ...updatedControls,
+      },
     });
-  };
+  }, [setAuthForm, authForm, checkValidity]);
 
-  onAuth = (event) => {
+  const onAuth = useCallback((event) => {
     event.preventDefault();
 
-    this.props.onAuth(
-      this.state.controls.email.value,
-      this.state.controls.password.value,
-      this.state.isSignUp
+    props.onAuth(
+      authForm.controls.email.value,
+      authForm.controls.password.value,
+      authForm.isSignUp,
     );
-  };
+  }, [authForm]);
 
-  onSwitchModeHandler = () => {
-    this.setState((prevState) => {
-      return {
-        isSignUp: !prevState.isSignUp,
-      };
-    });
-  };
+  const onSwitchModeHandler = useCallback(() => {
+    setIsSignUp(!isSignUp);
+  }, [isSignUp, setIsSignUp]);
 
-  componentDidMount() {
-    if (!this.props.buildingBurger && this.props.authRedirectPath !== "/") {
-      this.props.onSetAuthRedirectPath();
+  useEffect(() => {
+    if (!props.buildingBurger && props.authRedirectPath !== "/") {
+      props.onSetAuthRedirectPath();
+    }
+  }, []);
+
+  const orderFormArray = [];
+
+  for (let key in authForm.controls) {
+    if (authForm.controls.hasOwnProperty(key)) {
+      orderFormArray.push({
+        id: key,
+        config: authForm.controls[key],
+      });
     }
   }
 
-  render() {
-    const orderFormArray = [];
+  let form = (
+    <Aux>
+      <form onSubmit={onAuth}>
+        {orderFormArray.map((item) => (
+          <Input
+            key={item.id}
+            changed={(event) => onInputChangedHandler(event, item.id)}
+            elementType={item.config.elementType}
+            elementConfig={item.config.elementConfig}
+            valid={
+              item.config.validation ? item.config.validation.valid : true
+            }
+            touched={item.config.touched}
+            value={item.config.value}
+          />
+        ))}
+        <Button btnType={"Success"}>SUBMIT</Button>
+      </form>
 
-    for (let key in this.state.controls) {
-      if (this.state.controls.hasOwnProperty(key)) {
-        orderFormArray.push({
-          id: key,
-          config: this.state.controls[key],
-        });
-      }
-    }
+      <Button btnType={"Danger"} clicked={onSwitchModeHandler}>
+        SWITCH TO {isSignUp ? "SIGN-IN" : "SIGN-UP"}
+      </Button>
+    </Aux>
+  );
 
-    let form = (
-      <Aux>
-        <form onSubmit={this.onAuth}>
-          {orderFormArray.map((item) => (
-            <Input
-              key={item.id}
-              changed={(event) => this.onInputChangedHandler(event, item.id)}
-              elementType={item.config.elementType}
-              elementConfig={item.config.elementConfig}
-              valid={
-                item.config.validation ? item.config.validation.valid : true
-              }
-              touched={item.config.touched}
-              value={item.config.value}
-            />
-          ))}
-          <Button btnType={"Success"}>SUBMIT</Button>
-        </form>
+  let errorMessage = null;
 
-        <Button btnType={"Danger"} clicked={this.onSwitchModeHandler}>
-          SWITCH TO {this.state.isSignUp ? "SIGN-IN" : "SIGN-UP"}
-        </Button>
-      </Aux>
+  if (props.error) {
+    errorMessage = (
+      <p
+        style={{
+          padding: "15px 10px",
+          display: "inline-block",
+          border: "1px solid red",
+          color: "red",
+          textAlign: "center",
+        }}
+      >
+        {props.error.message}
+      </p>
     );
+  }
 
-    let errorMessage = null;
+  if (props.loading) {
+    form = <Spinner/>;
+  }
 
-    if (this.props.error) {
-      errorMessage = (
-        <p
-          style={{
-            padding: "15px 10px",
-            display: "inline-block",
-            border: "1px solid red",
-            color: "red",
-            textAlign: "center",
-          }}
-        >
-          {this.props.error.message}
-        </p>
-      );
-    }
-
-    if (this.props.loading) {
-      form = <Spinner />;
-    }
-
-    return !this.props.isAuth ? (
-      <div className={classes.AuthWrapper}>
-        <div className={classes.Auth}>
-          {errorMessage}
-          {form}
-        </div>
+  return !props.isAuth ? (
+    <div className={classes.AuthWrapper}>
+      <div className={classes.Auth}>
+        {errorMessage}
+        {form}
       </div>
-    ) : (
-      <Redirect to={this.props.authRedirectPath} />
-    );
-  }
-}
+    </div>
+  ) : (
+    <Redirect to={props.authRedirectPath}/>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
@@ -200,4 +202,4 @@ const maoDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, maoDispatchToProps)(Auth);
+export default connect(mapStateToProps, maoDispatchToProps)(memo(Auth));
