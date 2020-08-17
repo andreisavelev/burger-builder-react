@@ -51,6 +51,16 @@ const Auth = (props) => {
     },
   });
   const [isSignUp, setIsSignUp] = useState(false);
+  const {
+    /** @type {function} */
+    onAuth: onAuthFromProps,
+
+    /** @type {function} */
+    onSetAuthRedirectPath,
+    buildingBurger,
+    /** @type {string} */
+    authRedirectPath,
+  } = props;
 
   /**
    * Run validation checks
@@ -95,22 +105,22 @@ const Auth = (props) => {
   const onAuth = useCallback((event) => {
     event.preventDefault();
 
-    props.onAuth(
+    onAuthFromProps(
       authForm.controls.email.value,
       authForm.controls.password.value,
       authForm.isSignUp,
     );
-  }, [authForm]);
+  }, [authForm, onAuthFromProps]);
 
   const onSwitchModeHandler = useCallback(() => {
     setIsSignUp(!isSignUp);
   }, [isSignUp, setIsSignUp]);
 
   useEffect(() => {
-    if (!props.buildingBurger && props.authRedirectPath !== "/") {
-      props.onSetAuthRedirectPath();
+    if (!buildingBurger && authRedirectPath !== "/") {
+      onSetAuthRedirectPath();
     }
-  }, []);
+  }, [onSetAuthRedirectPath, buildingBurger, authRedirectPath]);
 
   const orderFormArray = [];
 

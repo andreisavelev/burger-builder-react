@@ -13,10 +13,10 @@ import { logOut } from "../../../store/actions/index";
 const Logout = ({ onLogout }) => {
   useEffect(() => {
     onLogout();
-  }, []);
+  }, [onLogout]);
 
 
-    return <Redirect to={"/"} />;
+  return <Redirect to={"/"}/>;
 };
 
 const mapDispatchToProps = (dispatch) => {
