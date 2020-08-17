@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy, useEffect, memo } from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -17,10 +17,15 @@ const AsyncOrders = lazy(() => {
   return import("./containers/Orders/Orders");
 });
 
-const App = (props) => {
+/**
+ * The main application's component, contains routes and layout
+ * @param {function} onTryAutoAuth
+ * @param {boolean} isAuth
+ */
+const App = ({ onTryAutoAuth, isAuth }) => {
   useEffect(() => {
-    props.onTryAutoAuth();
-  }, []);
+    onTryAutoAuth();
+  }, [onTryAutoAuth]);
 
   let routes = (
     <Switch>
@@ -36,7 +41,7 @@ const App = (props) => {
     </Switch>
   );
 
-  if (props.isAuth) {
+  if (isAuth) {
     routes = (
       <Switch>
         <Route path={"/"} exact component={BurgerBuilder}/>
@@ -80,4 +85,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(memo(App)));
