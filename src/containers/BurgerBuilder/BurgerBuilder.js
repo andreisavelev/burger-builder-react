@@ -26,18 +26,18 @@ const BurgerBuilder = ({ history }) => {
   const isAuthenticated =  useSelector(state => (state.auth.token !== null));
 
   // selectors
-  const onIngredientAdded = (ingredientName) => {
+  const onIngredientAdded = useCallback((ingredientName) => {
     dispatch(burgerBuilderActions.addIngredient(ingredientName))
-  };
-  const onIngredientRemoved = (ingredientName) => {
+  }, [dispatch]);
+  const onIngredientRemoved = useCallback((ingredientName) => {
     dispatch(burgerBuilderActions.removeIngredient(ingredientName));
-  };
-  const onInitIngredients = () => {
+  }, [dispatch]);
+  const onInitIngredients = useCallback(() => {
     dispatch(burgerBuilderActions.initIngredients());
-  };
-  const onInitPurchase = () => {
+  }, [dispatch]);
+  const onInitPurchase = useCallback(() => {
     dispatch(burgerBuilderActions.purchaseInit());
-  };
+  }, []);
 
   useEffect(() => {
     onInitIngredients();
