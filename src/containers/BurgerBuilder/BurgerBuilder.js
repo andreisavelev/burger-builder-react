@@ -14,12 +14,13 @@ import * as burgerBuilderActions from "../../store/actions/";
 /**
  * Container for the burger controls
  */
-const BurgerBuilder =  memo((props) => {
+const BurgerBuilder = memo((props) => {
   const [purchasing, setPurchasing] = useState(false);
+  const { onInitIngredients, isAuthenticated, history, onInitPurchase } = props;
 
   useEffect(() => {
-    props.onInitIngredients();
-  }, []);
+    onInitIngredients();
+  }, [onInitIngredients]);
 
   const updatePurchaseState = useCallback((ingredients) => {
     const sum = Object.keys(ingredients)
@@ -33,81 +34,81 @@ const BurgerBuilder =  memo((props) => {
   }, []);
 
   const purchaseHandler = useCallback(() => {
-    if (props.isAuthenticated) {
+    if (isAuthenticated) {
       setPurchasing(true);
     } else {
-      props.history.push("/auth");
+      history.push("/auth");
     }
-  }, [setPurchasing]);
+  }, [setPurchasing, history, isAuthenticated]);
 
   const purchaseCancelHandler = useCallback(() => {
     setPurchasing(false);
   }, [setPurchasing]);
 
   const purchaseContinueHandler = useCallback(() => {
-    props.onInitPurchase();
-    props.history.push("/checkout");
-  }, []);
+    onInitPurchase();
+    history.push("/checkout");
+  }, [onInitPurchase, history]);
 
-    const disabledInfo = {
-      ...props.ingredients,
-    };
-    let orderSummary = null;
-    let burger = props.error ? (
-      <p>Ingredients can`t be loaded!</p>
-    ) : (
-      <Spinner />
-    );
+  const disabledInfo = {
+    ...props.ingredients,
+  };
+  let orderSummary = null;
+  let burger = props.error ? (
+    <p>Ingredients can`t be loaded!</p>
+  ) : (
+    <Spinner/>
+  );
 
-    if (props.ingredients) {
-      burger = (
-        <div style={{
-          display: 'grid',
-          gridAutoRows: '100% 318px'
-        }}>
-          <Burger ingredients={props.ingredients} />
-          <BuildControls
-            ingredientAdded={props.onIngredientAdded}
-            ingredientRemoved={props.onIngredientRemoved}
-            disabled={disabledInfo}
-            purchasable={updatePurchaseState(props.ingredients)}
-            ordered={purchaseHandler}
-            isAuth={props.isAuthenticated}
-            price={props.totalPrice}
-          />
-        </div>
-      );
-
-      orderSummary = (
-        <OrderSummary
-          ingredients={props.ingredients}
+  if (props.ingredients) {
+    burger = (
+      <div style={{
+        display: "grid",
+        gridAutoRows: "100% 318px",
+      }}>
+        <Burger ingredients={props.ingredients}/>
+        <BuildControls
+          ingredientAdded={props.onIngredientAdded}
+          ingredientRemoved={props.onIngredientRemoved}
+          disabled={disabledInfo}
+          purchasable={updatePurchaseState(props.ingredients)}
+          ordered={purchaseHandler}
+          isAuth={props.isAuthenticated}
           price={props.totalPrice}
-          purchaseCancelled={purchaseCancelHandler}
-          purchaseContinued={purchaseContinueHandler}
         />
-      );
-    }
-
-    for (let key in disabledInfo) {
-      if (disabledInfo.hasOwnProperty(key)) {
-        disabledInfo[key] = disabledInfo[key] <= 0;
-      }
-    }
-
-    return (
-      <Aux>
-        {purchasing && (<Modal
-          show={purchasing}
-          modalClosed={purchaseCancelHandler}
-        >
-          {orderSummary}
-        </Modal>)}
-        {burger}
-      </Aux>
+      </div>
     );
+
+    orderSummary = (
+      <OrderSummary
+        ingredients={props.ingredients}
+        price={props.totalPrice}
+        purchaseCancelled={purchaseCancelHandler}
+        purchaseContinued={purchaseContinueHandler}
+      />
+    );
+  }
+
+  for (let key in disabledInfo) {
+    if (disabledInfo.hasOwnProperty(key)) {
+      disabledInfo[key] = disabledInfo[key] <= 0;
+    }
+  }
+
+  return (
+    <Aux>
+      {purchasing && (<Modal
+        show={purchasing}
+        modalClosed={purchaseCancelHandler}
+      >
+        {orderSummary}
+      </Modal>)}
+      {burger}
+    </Aux>
+  );
 });
 
-const mapStateToProps = function (state) {
+const mapStateToProps = function(state) {
   return {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
@@ -116,21 +117,21 @@ const mapStateToProps = function (state) {
   };
 };
 
-const mapDispatchToProps = function (dispatch) {
+const mapDispatchToProps = function(dispatch) {
   return {
-    onIngredientAdded: function (ingredientName) {
+    onIngredientAdded: function(ingredientName) {
       dispatch(burgerBuilderActions.addIngredient(ingredientName));
     },
-    onIngredientRemoved: function (ingredientName) {
+    onIngredientRemoved: function(ingredientName) {
       dispatch(burgerBuilderActions.removeIngredient(ingredientName));
     },
-    onInitIngredients: function () {
+    onInitIngredients: function() {
       dispatch(burgerBuilderActions.initIngredients());
     },
-    onInitPurchase: function () {
+    onInitPurchase: function() {
       dispatch(burgerBuilderActions.purchaseInit());
     },
-    onSetAuthRedirectPath: function (path) {
+    onSetAuthRedirectPath: function(path) {
       dispatch(burgerBuilderActions.setAuthRedirectPath(path));
     },
   };
@@ -138,5 +139,5 @@ const mapDispatchToProps = function (dispatch) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(widthErrorHandler(BurgerBuilder, axios));

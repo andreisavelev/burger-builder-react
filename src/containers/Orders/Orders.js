@@ -9,10 +9,11 @@ import { fetchOrders } from "../../store/actions";
 
 const Orders = memo(props => {
   let ordersList = <Spinner/>;
+  const { onInitOrders } = props;
 
   useEffect(() => {
-    props.onInitOrders(props.token, props.userId);
-  }, []);
+    onInitOrders(props.token, props.userId);
+  }, [onInitOrders]);
 
   if (!props.loading) {
     ordersList = props.orders.map((item) => (
