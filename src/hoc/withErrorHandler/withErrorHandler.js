@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback, memo } from "react";
+import React, { memo } from "react";
 
 import Modal from "../../components/ui/Modal/Modal";
 import Aux from "../Auxiliary";
+import useHttpErrorHandler from '../../hooks/http-error-handler';
 
 /**
  * Render modal if error occurs
@@ -11,34 +12,13 @@ import Aux from "../Auxiliary";
  */
 const withErrorHandler = (WrappedComponent, axios) => {
   return memo((props) => {
-    const [error, setError] = useState(null);
-    const reqInterceptor = axios.interceptors.request.use((req) => {
-      setError(null)
-      return req;
-    });
-    const resInterceptor = axios.interceptors.response.use(
-      (res) => res,
-      (err) => {
-        setError(err);
-      }
-    );
-    const errorConfirmedHandler = useCallback(() => {
-      setError(null);
-    }, []);
-
-    useEffect(() => {
-      // Clean up
-      return () => {
-        axios.interceptors.request.eject(reqInterceptor);
-        axios.interceptors.response.eject(resInterceptor);
-      }
-    }, [reqInterceptor, resInterceptor]);
+    const [error, cleanError] = useHttpErrorHandler(axios);
 
       return (
         <Aux>
           {error && (<Modal
             show={error}
-            modalClosed={errorConfirmedHandler}
+            modalClosed={cleanError}
           >
             {error ? error.message : null}
           </Modal>)}
