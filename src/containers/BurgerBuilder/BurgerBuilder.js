@@ -1,5 +1,5 @@
 import React, { memo, useState, useCallback, useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 
 import Aux from "../../hoc/Auxiliary";
 import Burger from "../../components/Burger/Burger";
@@ -13,10 +13,31 @@ import * as burgerBuilderActions from "../../store/actions/";
 
 /**
  * Container for the burger controls
+ * @param {object} history
  */
-const BurgerBuilder = memo((props) => {
+const BurgerBuilder = ({ history }) => {
   const [purchasing, setPurchasing] = useState(false);
-  const { onInitIngredients, isAuthenticated, history, onInitPurchase } = props;
+
+  // dispatchers
+  const dispatch = useDispatch();
+  const ingredients = useSelector(state => (state.burgerBuilder.ingredients));
+  const totalPrice = useSelector(state => (state.burgerBuilder.totalPrice));
+  const error = useSelector(state => (state.burgerBuilder.error));
+  const isAuthenticated =  useSelector(state => (state.auth.token !== null));
+
+  // selectors
+  const onIngredientAdded = (ingredientName) => {
+    dispatch(burgerBuilderActions.addIngredient(ingredientName))
+  };
+  const onIngredientRemoved = (ingredientName) => {
+    dispatch(burgerBuilderActions.removeIngredient(ingredientName));
+  };
+  const onInitIngredients = () => {
+    dispatch(burgerBuilderActions.initIngredients());
+  };
+  const onInitPurchase = () => {
+    dispatch(burgerBuilderActions.purchaseInit());
+  };
 
   useEffect(() => {
     onInitIngredients();
@@ -51,38 +72,38 @@ const BurgerBuilder = memo((props) => {
   }, [onInitPurchase, history]);
 
   const disabledInfo = {
-    ...props.ingredients,
+    ...ingredients,
   };
   let orderSummary = null;
-  let burger = props.error ? (
+  let burger = error ? (
     <p>Ingredients can`t be loaded!</p>
   ) : (
     <Spinner/>
   );
 
-  if (props.ingredients) {
+  if (ingredients) {
     burger = (
       <div style={{
         display: "grid",
         gridAutoRows: "100% 318px",
       }}>
-        <Burger ingredients={props.ingredients}/>
+        <Burger ingredients={ingredients}/>
         <BuildControls
-          ingredientAdded={props.onIngredientAdded}
-          ingredientRemoved={props.onIngredientRemoved}
+          ingredientAdded={onIngredientAdded}
+          ingredientRemoved={onIngredientRemoved}
           disabled={disabledInfo}
-          purchasable={updatePurchaseState(props.ingredients)}
+          purchasable={updatePurchaseState(ingredients)}
           ordered={purchaseHandler}
-          isAuth={props.isAuthenticated}
-          price={props.totalPrice}
+          isAuth={isAuthenticated}
+          price={totalPrice}
         />
       </div>
     );
 
     orderSummary = (
       <OrderSummary
-        ingredients={props.ingredients}
-        price={props.totalPrice}
+        ingredients={ingredients}
+        price={totalPrice}
         purchaseCancelled={purchaseCancelHandler}
         purchaseContinued={purchaseContinueHandler}
       />
@@ -106,38 +127,6 @@ const BurgerBuilder = memo((props) => {
       {burger}
     </Aux>
   );
-});
-
-const mapStateToProps = function(state) {
-  return {
-    ingredients: state.burgerBuilder.ingredients,
-    totalPrice: state.burgerBuilder.totalPrice,
-    error: state.burgerBuilder.error,
-    isAuthenticated: state.auth.token !== null,
-  };
 };
 
-const mapDispatchToProps = function(dispatch) {
-  return {
-    onIngredientAdded: function(ingredientName) {
-      dispatch(burgerBuilderActions.addIngredient(ingredientName));
-    },
-    onIngredientRemoved: function(ingredientName) {
-      dispatch(burgerBuilderActions.removeIngredient(ingredientName));
-    },
-    onInitIngredients: function() {
-      dispatch(burgerBuilderActions.initIngredients());
-    },
-    onInitPurchase: function() {
-      dispatch(burgerBuilderActions.purchaseInit());
-    },
-    onSetAuthRedirectPath: function(path) {
-      dispatch(burgerBuilderActions.setAuthRedirectPath(path));
-    },
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(widthErrorHandler(BurgerBuilder, axios));
+export default widthErrorHandler(memo(BurgerBuilder), axios);
